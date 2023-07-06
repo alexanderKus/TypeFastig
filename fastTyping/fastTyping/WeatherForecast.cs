@@ -1,4 +1,4 @@
-﻿namespace TypeFasting;
+﻿namespace fastTyping;
 
 public class WeatherForecast
 {

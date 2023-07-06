@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-namespace TypeFasting.Controllers;
+namespace fastTyping.Controllers;
 
 [ApiController]
 [Route("[controller]")]
