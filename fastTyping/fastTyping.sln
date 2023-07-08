@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 25.0.1705.5
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "fastTyping.Api", "fastTyping\fastTyping.Api.csproj", "{8C64888B-4C9B-4057-9630-2385CB5CC850}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "fastTyping.Common", "fastTyping.Common\fastTyping.Common.csproj", "{341BC2B7-2762-4905-8A81-ED6B467ABC09}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "fastTyping.Database", "Database\fastTyping.Database.csproj", "{990FD196-D5DE-4125-AE4E-0731DDC30322}"
@@ -12,6 +10,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "fastTyping.Infrastructure", "fastTyping.Infrastructure\fastTyping.Infrastructure.csproj", "{A31A975C-3D02-411B-9C5F-B1651B656E17}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "fastTyping.Tests", "fastTyping.Tests\fastTyping.Tests.csproj", "{5512FBF4-31EF-4E3F-B857-1277DC03F7F9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "fastTyping.Api", "fastTyping.Api\fastTyping.Api.csproj", "{D7F4EF54-AB4C-4D4D-A593-7755C6479599}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +39,10 @@ Global
 		{5512FBF4-31EF-4E3F-B857-1277DC03F7F9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5512FBF4-31EF-4E3F-B857-1277DC03F7F9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5512FBF4-31EF-4E3F-B857-1277DC03F7F9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D7F4EF54-AB4C-4D4D-A593-7755C6479599}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D7F4EF54-AB4C-4D4D-A593-7755C6479599}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D7F4EF54-AB4C-4D4D-A593-7755C6479599}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D7F4EF54-AB4C-4D4D-A593-7755C6479599}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
