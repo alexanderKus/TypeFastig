@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "fastTyping.Tests", "fastTyp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "fastTyping.Api", "fastTyping.Api\fastTyping.Api.csproj", "{D7F4EF54-AB4C-4D4D-A593-7755C6479599}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "fastTyping.FastTypingHub", "fastTyping.FastTypingHub\fastTyping.FastTypingHub.csproj", "{2528EE5B-F333-4371-929B-8DA60765C0D6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -43,6 +45,10 @@ Global
 		{D7F4EF54-AB4C-4D4D-A593-7755C6479599}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D7F4EF54-AB4C-4D4D-A593-7755C6479599}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D7F4EF54-AB4C-4D4D-A593-7755C6479599}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2528EE5B-F333-4371-929B-8DA60765C0D6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2528EE5B-F333-4371-929B-8DA60765C0D6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2528EE5B-F333-4371-929B-8DA60765C0D6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2528EE5B-F333-4371-929B-8DA60765C0D6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
