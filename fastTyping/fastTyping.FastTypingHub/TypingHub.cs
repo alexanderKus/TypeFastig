@@ -28,10 +28,6 @@ namespace fastTyping.FastTypingHub
             // TODO: Move this logic inside roomMananger
             try
             {
-                if (typist.WrittenWords == 0)
-                {
-                    return;
-                }
                 var room = _roomManager.AddTypistToRomm(typist);
                 var groupName = room.RoomId.ToString();
                 await Groups.AddToGroupAsync(Context.ConnectionId, groupName);

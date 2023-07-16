@@ -1,4 +1,5 @@
-﻿using fastTyping.Common;
+﻿using System.Collections.Concurrent;
+using fastTyping.Common;
 using fastTyping.Common.Entity;
 using fastTyping.Common.Interfaces;
 
@@ -6,7 +7,7 @@ namespace fastTyping.Infrastructure.Services
 {
 	public class RoomManager : IRoomManager
 	{
-        private readonly List<Room> _rooms = new();
+        private static readonly List<Room> _rooms = new();
 
 		public RoomManager()
 		{
