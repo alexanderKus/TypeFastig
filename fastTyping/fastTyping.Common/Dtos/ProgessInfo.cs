@@ -2,7 +2,7 @@
 
 namespace fastTyping.Common.Dtos
 {
-	public sealed class ProgessInfo
+	public class ProgessInfo
 	{
 		public List<TypistProgess> TypistsProgress { get; } = new();
 

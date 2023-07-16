@@ -33,9 +33,9 @@ namespace fastTyping.Infrastructure.Services
                 }
                 if (_room.IsFull())
                 {
-                    _startAt = DateTime.UtcNow + TimeSpan.FromSeconds(30);
+                    _startAt = DateTime.UtcNow + TimeSpan.FromSeconds(10);
                     var groupName = _room.RoomId.ToString();
-                    await _hubContext.Clients.Groups(groupName).SendAsync("StartCentest", _startAt);
+                    await _hubContext.Clients.Groups(groupName).SendAsync("StartContest", _startAt);
                     return true;
                 }
             }
