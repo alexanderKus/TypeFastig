@@ -1,0 +1,30 @@
+@import "../../../variables.scss";
+.line {
+  display: flex;
+  flex-direction: row;
+}
+
+.word {
+  display: flex;
+  flex-direction: row;
+}
+
+.letter {
+}
+
+.wrong-letter {
+  color: #ff4949;
+}
+
+.correct-letter {
+  color: #009d00;
+}
+
+.neutral-letter {
+  color: $font-color;
+}
+
+.current-letter {
+  color:yellow;
+  //transform: scale(1.2);  
+}

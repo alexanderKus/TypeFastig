@@ -1,0 +1,26 @@
+@import "../../../../variables.scss";
+
+.navbar-wrapper {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  border-bottom: 2px solid $font-color;
+  height: 2rem;
+  margin-bottom: 1rem;
+}
+
+.navbar-left,
+.navbar-right {
+  display: flex;
+  flex-direction: row;
+  margin: auto;
+  gap: 2rem;
+}
+.navbar-left > *,
+.navbar-right > * {
+  cursor: pointer;
+}
+
+a {
+  text-decoration: none;
+}
