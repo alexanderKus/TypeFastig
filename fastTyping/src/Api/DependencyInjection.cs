@@ -1,5 +1,4 @@
-﻿using Infrastructure.Database;
-using Microsoft.EntityFrameworkCore;
+﻿using System.Reflection;
 
 namespace Api;
 
@@ -9,6 +8,7 @@ public static class DependencyInjection
 
     public static IServiceCollection AddApi(this IServiceCollection services)
     {
+        services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
         services.AddCors(options =>
         {
             options.AddPolicy(name: MyAllowSpecificOrigins,

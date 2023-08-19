@@ -14,10 +14,21 @@ public class UserRepository : IUserRepository
         _context = context;
 	}
 
-    public async Task<User?> GetUserByUsernameAsync(string username)
+    public async Task<User> AddUserAsync(User user)
     {
-        var user = await _context.Users.SingleOrDefaultAsync(x => x.Username == username);
+        await _context.Users.AddAsync(user);
+        await _context.SaveChangesAsync();
         return user;
+    }
+
+    public Task<User?> GetUserByEmailAsync(string email)
+    {
+        return _context.Users.SingleOrDefaultAsync(x => x.Email == email);
+    }
+
+    public Task<User?> GetUserByUsernameAsync(string username)
+    {
+        return _context.Users.SingleOrDefaultAsync(x => x.Username == username);
     }
 }
 
