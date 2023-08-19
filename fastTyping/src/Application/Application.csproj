@@ -1,0 +1,37 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Domain\Domain.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="Interfaces\" />
+    <None Remove="Auth\" />
+    <None Remove="Auth\Queries\" />
+    <None Remove="Auth\Commands\" />
+    <None Remove="Auth\Common\" />
+    <None Remove="Auth\Commands\Register\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Interfaces\" />
+    <Folder Include="Auth\" />
+    <Folder Include="Auth\Queries\" />
+    <Folder Include="Auth\Commands\" />
+    <Folder Include="Auth\Common\" />
+    <Folder Include="Auth\Commands\Register\" />
+    <Folder Include="Auth\Queries\Login\" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="MediatR" Version="12.1.1" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0" />
+    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="11.1.0" />
+    <PackageReference Include="FluentValidation" Version="11.7.1" />
+    <PackageReference Include="OneOf" Version="3.0.255" />
+  </ItemGroup>
+</Project>
