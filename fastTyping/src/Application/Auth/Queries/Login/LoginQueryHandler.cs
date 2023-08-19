@@ -19,7 +19,7 @@ public class LoginQueryHandler
         Handle(LoginQuery request, CancellationToken cancellationToken)
     {
         var user = await _userRepository.GetUserByUsernameAsync(request.Username);
-        if (user is not null)
+        if (user is not null && user.Password == request.Password)
         {
             return new AuthenticationRespone("authenticatiedToken");
         }
