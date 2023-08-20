@@ -10,21 +10,21 @@ namespace Application.Auth.Commands.Register;
 public class RegisterCommandHandler
     : IRequestHandler<RegisterCommand, OneOf<AuthenticationRespone, AuthenticationError>>
 {
-    private readonly IUserRepository _userRepository;
+    private readonly IUnitOfWork _unitOfWork;
     private readonly IJwtTokenGenerator _tokenGenerator;
 
     public RegisterCommandHandler(
-        IUserRepository userRepository, IJwtTokenGenerator tokenGenerator)
+        IUnitOfWork unitOfWork, IJwtTokenGenerator tokenGenerator)
     {
-        _userRepository = userRepository;
+        _unitOfWork = unitOfWork;
         _tokenGenerator = tokenGenerator;
     }
 
     public async Task<OneOf<AuthenticationRespone, AuthenticationError>>
         Handle(RegisterCommand request, CancellationToken cancellationToken)
     {
-        var userByEmail = await _userRepository.GetUserByEmailAsync(request.Email);
-        var userByUsername = await _userRepository.GetUserByUsernameAsync(request.Username);
+        var userByEmail = await _unitOfWork.UserRepository.GetUserByEmailAsync(request.Email);
+        var userByUsername = await _unitOfWork.UserRepository.GetUserByUsernameAsync(request.Username);
         if (userByEmail is not null)
         {
             return AuthenticationError.EmailTaken;
@@ -39,7 +39,7 @@ public class RegisterCommandHandler
             Email = request.Email,
             Password = request.Password
         };
-        user = await _userRepository.AddUserAsync(user);
+        user = await _unitOfWork.UserRepository.AddUserAsync(user);
         var token = _tokenGenerator.GenerateToken(user.Id, user.Username);
         return new AuthenticationRespone(token);
     }
