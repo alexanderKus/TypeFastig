@@ -1,8 +1,11 @@
-# Create Inital migrations
+# Create migrations
 
 
-`dotnet ef migrations add Inital -p Infrastructure/Infrastructure.csproj -s Api/Api.csproj -o Database/Migrations`
+Those commands shloud be executed from 'src/' folder.
 
 
-`dotnet ef database update`
+`dotnet ef migrations add <Migration_name> -p Infrastructure/Infrastructure.csproj -s Api/Api.csproj -o Database/Migrations`
+
+
+`dotnet ef database update -p Api/Api.csproj`
 
