@@ -1,7 +1,7 @@
 ﻿using Application.Auth.Common;
 using Application.Interfaces.Auth;
 using Application.Interfaces.Repositories;
-using Domain.Models.Common;
+using Domain.Models.Entities;
 using MediatR;
 using OneOf;
 

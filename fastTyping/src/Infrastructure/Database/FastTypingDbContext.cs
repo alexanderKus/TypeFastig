@@ -1,9 +1,9 @@
-﻿using Domain.Models.Common;
+﻿using Domain.Models.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Database
 {
-	public class FastTypingDbContext : DbContext
+    public class FastTypingDbContext : DbContext
     {
         public FastTypingDbContext(DbContextOptions<FastTypingDbContext> options)
 			: base (options)
