@@ -1,20 +1,21 @@
 ﻿using System.Net;
+using Api.Controllers.Common;
 using Application.Auth.Commands.Register;
 using Application.Auth.Common;
 using Application.Auth.Queries.Login;
 using AutoMapper;
 using Domain.Models.Auth;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using OneOf;
 
 namespace Api.Controllers;
 
-[ApiController]
-[Route("[controller]")]
+[AllowAnonymous]
 
-public class AuthController : ControllerBase
+public class AuthController : ApiController
 {
     private readonly IMediator _mediator;
     private readonly IMapper _mapper;

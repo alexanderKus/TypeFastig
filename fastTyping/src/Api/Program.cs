@@ -4,10 +4,9 @@ using Infrastructure;
 
 var MyAllowSpecificOrigins = "_allowAllOrigins";
 var builder = WebApplication.CreateBuilder(args);
-var config = builder.Configuration;
 
 builder.Services.AddApplication();
-builder.Services.AddInfrastructure(config);
+builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddApi();
 
 builder.Services.AddControllers();
@@ -27,6 +26,8 @@ app.UseExceptionHandler("/errors");
 app.UseHttpsRedirection();
 
 app.UseCors(MyAllowSpecificOrigins);
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 

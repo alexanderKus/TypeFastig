@@ -1,5 +1,6 @@
 ﻿using Application.Auth.Common;
-using Application.Interfaces;
+using Application.Interfaces.Auth;
+using Application.Interfaces.Repositories;
 using Domain.Models.Common;
 using MediatR;
 using OneOf;
@@ -10,10 +11,13 @@ public class RegisterCommandHandler
     : IRequestHandler<RegisterCommand, OneOf<AuthenticationRespone, AuthenticationError>>
 {
     private readonly IUserRepository _userRepository;
+    private readonly IJwtTokenGenerator _tokenGenerator;
 
-    public RegisterCommandHandler(IUserRepository userRepository)
+    public RegisterCommandHandler(
+        IUserRepository userRepository, IJwtTokenGenerator tokenGenerator)
     {
         _userRepository = userRepository;
+        _tokenGenerator = tokenGenerator;
     }
 
     public async Task<OneOf<AuthenticationRespone, AuthenticationError>>
@@ -36,6 +40,7 @@ public class RegisterCommandHandler
             Password = request.Password
         };
         user = await _userRepository.AddUserAsync(user);
-        return new AuthenticationRespone("AuthenticatedResponse");
+        var token = _tokenGenerator.GenerateToken(user.Id, user.Username);
+        return new AuthenticationRespone(token);
     }
 }

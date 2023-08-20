@@ -16,6 +16,9 @@
     <None Remove="Auth\Commands\" />
     <None Remove="Auth\Common\" />
     <None Remove="Auth\Commands\Register\" />
+    <None Remove="Interfaces\Services\" />
+    <None Remove="Interfaces\Auth\" />
+    <None Remove="Interfaces\Repositories\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Interfaces\" />
@@ -25,6 +28,9 @@
     <Folder Include="Auth\Common\" />
     <Folder Include="Auth\Commands\Register\" />
     <Folder Include="Auth\Queries\Login\" />
+    <Folder Include="Interfaces\Services\" />
+    <Folder Include="Interfaces\Auth\" />
+    <Folder Include="Interfaces\Repositories\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />

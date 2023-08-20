@@ -22,11 +22,13 @@
     <None Remove="Controllers\" />
     <None Remove="Common\" />
     <None Remove="Common\AutoMapper\" />
+    <None Remove="Controllers\Common\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Controllers\" />
     <Folder Include="Common\" />
     <Folder Include="Common\AutoMapper\" />
+    <Folder Include="Controllers\Common\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Domain\Domain.csproj">

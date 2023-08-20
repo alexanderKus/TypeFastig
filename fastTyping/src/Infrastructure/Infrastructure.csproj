@@ -21,17 +21,24 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.32.1" />
+    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="7.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Authorization" Version="7.0.10" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication" Version="2.2.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.21" />
   </ItemGroup>
   <ItemGroup>
-    <None Remove="Services\" />
     <None Remove="Repositories\" />
     <None Remove="Database\" />
     <None Remove="Database\Migrations\" />
+    <None Remove="Auth\" />
+    <None Remove="Services\" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Services\" />
     <Folder Include="Repositories\" />
     <Folder Include="Database\" />
     <Folder Include="Database\Migrations\" />
+    <Folder Include="Auth\" />
+    <Folder Include="Services\" />
   </ItemGroup>
 </Project>
