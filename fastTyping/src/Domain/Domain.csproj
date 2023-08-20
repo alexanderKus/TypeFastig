@@ -11,11 +11,13 @@
     <None Remove="Models\Auth\" />
     <None Remove="Models\Enums\" />
     <None Remove="Models\Entities\" />
+    <None Remove="Models\Dtos\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Models\" />
     <Folder Include="Models\Auth\" />
     <Folder Include="Models\Enums\" />
     <Folder Include="Models\Entities\" />
+    <Folder Include="Models\Dtos\" />
   </ItemGroup>
 </Project>
