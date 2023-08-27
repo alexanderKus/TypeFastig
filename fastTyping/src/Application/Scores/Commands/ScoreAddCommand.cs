@@ -2,5 +2,5 @@
 
 namespace Application.Scores.Commands;
 
-public record ScoreAddCommand(int UserId, float Precision, TimeSpan Time)
+public record ScoreAddCommand(int UserId, float Accuracy, int Speed)
     : IRequest<Unit>;

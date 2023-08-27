@@ -1,3 +1,3 @@
 ﻿namespace Domain.Models.Dtos;
 
-public record ScoreDto(int Id, float Precision, TimeSpan Time);
+public record ScoreDto(int Id, float Accuracy, int Speed);

@@ -31,7 +31,7 @@ public class ScoreController : ApiController
         await _mediator.Send(scoreAddCommand);
         return Ok();
     }
-
+    
     [HttpGet("GetScoreForUser/{userId}")]
     public async Task<IActionResult> GetScoreForUser(int userId)
     {
@@ -40,6 +40,30 @@ public class ScoreController : ApiController
             await _mediator.Send(userScoresQuery);
         return result.Match(
             scores => Ok(JsonConvert.SerializeObject(result.Value)),
+            error => Problem(
+                detail: result.Value.ToString(), statusCode: (int)HttpStatusCode.NotFound));
+    }
+
+    [HttpGet("GetBestSpeedScore/{userid}")]
+    public async Task<IActionResult> GetBestSpeedScore(int userId)
+    {
+        UserBestSpeedScore userBestSpeedScoreQuery = new(userId);
+        OneOf<ScoreDto?, ScoreError> result =
+            await _mediator.Send(userBestSpeedScoreQuery);
+        return result.Match(
+            score => Ok(JsonConvert.SerializeObject(result.Value)),
+            error => Problem(
+                detail: result.Value.ToString(), statusCode: (int)HttpStatusCode.NotFound));
+    }
+
+    [HttpGet("GetBestAccuracyScore/{userid}")]
+    public async Task<IActionResult> GetBestAccuracyScore(int userId)
+    {
+        UserBestAccuracyScore userBestAccuracyScoreQuery = new(userId);
+        OneOf<ScoreDto?, ScoreError> result =
+            await _mediator.Send(userBestAccuracyScoreQuery);
+        return result.Match(
+            score => Ok(JsonConvert.SerializeObject(result.Value)),
             error => Problem(
                 detail: result.Value.ToString(), statusCode: (int)HttpStatusCode.NotFound));
     }

@@ -20,8 +20,8 @@ public class ScoreAddCommandHandler
         Score score = new() {
             Id = 0,
             UserId = request.UserId,
-            Precision = request.Precision,
-            Time = request.Time
+            Accuracy = request.Accuracy,
+            Speed = request.Speed
         };
         await _unitOfWork.ScoreRepository.AddScoreAsnyc(score);
         return Unit.Value;

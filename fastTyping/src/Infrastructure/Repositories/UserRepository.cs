@@ -26,7 +26,7 @@ public class UserRepository : IUserRepository
         return _context.Users.SingleOrDefaultAsync(x => x.Email == email);
     }
 
-    public Task<User?> GetUserById(int id)
+    public Task<User?> GetUserByIdAsync(int id)
     {
         return _context.Users.SingleOrDefaultAsync(x => x.Id == id);
     }

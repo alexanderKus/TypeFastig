@@ -20,7 +20,7 @@ public class UserScoresQueryHandler
     public async Task<OneOf<List<ScoreDto>, ScoreError>> Handle(
         UserScoresQuery request, CancellationToken cancellationToken)
     {
-        User? user = await _unitOfWork.UserRepository.GetUserById(request.UserId);
+        User? user = await _unitOfWork.UserRepository.GetUserByIdAsync(request.UserId);
         if (user is null)
         {
             return ScoreError.DoNotExists; // TODO: propabily UserError.DoNotExists...
