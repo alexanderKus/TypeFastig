@@ -4,11 +4,11 @@
 
 - [+] user profile site
 
-- [ ] create dialog when typing is done
+- [+] create dialog when typing is done
 
-- [ ] sending score to api
+- [+] sending score to api
 
-- [ ] create top 100 ranking
+- [+] create top 100 ranking
 
 - [ ] creating rooms  <- BIG
 
@@ -18,7 +18,7 @@
 
 - [ ] implement padding !!!
 
-- [ ] add some kind of spinner
+- [+] add some kind of spinner
 
 -----------------------------
 userProfiles: {

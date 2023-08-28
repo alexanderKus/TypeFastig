@@ -35,7 +35,6 @@ export class ProfileComponent implements OnInit, OnDestroy {
     private spinner: NgxSpinnerService,
     private router: Router
   ) {
-    // TODO: fix isTokenValid. Returns true even if token is expired
     if (!this.tokenService.isTokenValid) {
       this.router.navigate(['/login']);
     }

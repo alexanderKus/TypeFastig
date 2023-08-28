@@ -18,6 +18,8 @@ import { MatTableModule } from '@angular/material/table';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatTabsModule } from '@angular/material/tabs';
 import { NgxSpinnerModule } from 'ngx-spinner';
+import { TypingBoardComponent } from './shared/typing-board/typing-board.component';
+import { RoomComponent } from './features/room/room.component';
 
 @NgModule({
   declarations: [
@@ -27,6 +29,8 @@ import { NgxSpinnerModule } from 'ngx-spinner';
     HomeComponent,
     Top100Component,
     LoginComponent,
+    TypingBoardComponent,
+    RoomComponent,
   ],
   imports: [
     BrowserModule,

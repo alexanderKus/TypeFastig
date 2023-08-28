@@ -15,7 +15,13 @@ export class TokenService {
   }
 
   public get isTokenValid(): boolean {
-    if (!this.isTokenInCookies()) {
+    let expired = false;
+    if (this.token) {
+      let decoded: any = jwt_decode(this.token!);
+      const expiredDate = new Date(decoded.exp);
+      expired = expiredDate > new Date() ? true : false;
+    }
+    if (!this.isTokenInCookies() && expired) {
       this.token = undefined;
       return false;
     }
