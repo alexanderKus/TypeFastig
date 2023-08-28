@@ -30,6 +30,6 @@ export class UserService {
   }
 
   addScore(score: Score): Observable<void> {
-    return this.http.post<void>(`${environment}/score/addScore`, score);
+    return this.http.post<void>(`${environment.apiUrl}/score/addScore`, score);
   }
 }

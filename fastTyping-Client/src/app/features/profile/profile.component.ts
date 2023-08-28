@@ -14,12 +14,12 @@ import { UserService } from 'src/app/core/services/user.service';
 export class ProfileComponent implements OnInit, OnDestroy {
   username: string = '';
   bestSpeedScore: Score = {
-    Id: 0,
+    UserId: 0,
     Speed: 0,
     Accuracy: 0,
   };
   bestAccuracyScore: Score = {
-    Id: 0,
+    UserId: 0,
     Speed: 0,
     Accuracy: 0,
   };
@@ -66,7 +66,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
   private fixPosition(): void {
     let index = 1;
-    this.history.forEach((el) => (el.Id = index++));
+    this.history.forEach((el) => (el.UserId = index++));
   }
 
   private createPlot(): void {

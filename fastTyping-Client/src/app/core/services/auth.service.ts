@@ -28,7 +28,6 @@ export class AuthService {
       .pipe(
         map((res) => {
           if (!!res) {
-            console.log(res);
             this.tokenService.setToken(res.Token);
             this.isLoggedIn.next(true);
             return true;

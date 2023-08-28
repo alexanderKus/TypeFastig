@@ -1,5 +1,5 @@
 export interface Score {
-  Id: number;
+  UserId: number;
   Speed: number;
   Accuracy: number;
 }

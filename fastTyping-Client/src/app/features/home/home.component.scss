@@ -1,4 +1,9 @@
 @import "../../../variables.scss";
+
+.container > div {
+  margin: 1rem;
+}
+
 .line {
   display: flex;
   flex-direction: row;
@@ -25,6 +30,6 @@
 }
 
 .current-letter {
-  color:yellow;
-  //transform: scale(1.2);  
+  color: yellow;
+  //transform: scale(1.2);
 }

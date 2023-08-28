@@ -1,6 +1,6 @@
 <div class="container">
   <mat-tab-group>
-    <mat-tab label="First">
+    <mat-tab label="Accuracy">
       <table
         mat-table
         [dataSource]="data.bestAccuracy"
@@ -25,7 +25,7 @@
         <tr mat-row *matRowDef="let row; columns: columns1"></tr>
       </table>
     </mat-tab>
-    <mat-tab label="Second">
+    <mat-tab label="Speed">
       <table mat-table [dataSource]="data.bestSpeed" class="mat-elevation-z8">
         <ng-container matColumnDef="Username">
           <th mat-header-cell *matHeaderCellDef>Username</th>

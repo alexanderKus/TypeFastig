@@ -9,6 +9,7 @@ import {
 import { Model } from '../models/model';
 import { UserService } from 'src/app/core/services/user.service';
 import { Score } from 'src/app/core/models/score.model';
+import { TokenService } from 'src/app/core/services/token.service';
 
 @Component({
   selector: 'app-home',
@@ -32,67 +33,64 @@ export class HomeComponent implements OnDestroy {
   return &key->serial_node;
 }`;
 */
-  private text: string = 'siema';
-  textModel: Model = new Model(this.text);
   isGameStarted: boolean = false;
+  isEndDialogShown: boolean = false;
+
+  text: string = 'siema';
+  textModel: Model = new Model(this.text);
+
   writtenText: string = '';
   writtenTextModel: Model | undefined;
+
   currentWordIndex: number = 0;
-  errorCount: number = 0;
-  allLetterCount = this.textModel.length;
   interval: any;
   startedAt: number = 0;
+
+  errorCount: number = 0;
   speed: number = 0;
   bestSpeed: number = 0;
   accuracy: number = 0;
+
   @ViewChild('dialog') dialog!: ElementRef<HTMLDialogElement>;
 
   @HostListener('document:keypress', ['$event'])
   handleKeyboardEvent(event: KeyboardEvent) {
-    if (this.isGameStarted) {
-      let letter = this.textModel.getLetterFromIndex(this.currentWordIndex);
-      let isLetter = this.textModel.isLetterFromIndex(this.currentWordIndex);
-      if (event.key === ' ' && isLetter) {
-        this.writtenText += '.';
-      } else if (event.key === 'Enter') {
-        this.writtenText += '\n';
-      } else {
-        this.writtenText += event.key;
-      }
-      if (event.key !== letter) {
-        this.errorCount++;
-      }
-      this.writtenTextModel = new Model(this.writtenText);
-      this.currentWordIndex++;
-      this.accuracy =
-        ((this.writtenText.length - this.errorCount) /
-          this.writtenText.length) *
-        100;
-      if (this.currentWordIndex == this.text.length) {
-        this.isGameStarted = false;
+    if (this.isEndDialogShown) {
+      return;
+    } else if (!this.isGameStarted) {
+      this.init();
+    }
+    let letter = this.textModel.getLetterFromIndex(this.currentWordIndex);
+    let isLetter = this.textModel.isLetterFromIndex(this.currentWordIndex);
+    if (event.key === ' ' && isLetter) {
+      this.writtenText += '.';
+    } else if (event.key === 'Enter') {
+      this.writtenText += '\n';
+    } else {
+      this.writtenText += event.key;
+    }
+    if (event.key !== letter) {
+      this.errorCount++;
+    }
+    this.writtenTextModel = new Model(this.writtenText);
+    this.currentWordIndex++;
+    this.accuracy =
+      ((this.writtenText.length - this.errorCount) / this.writtenText.length) *
+      100;
+    if (this.currentWordIndex == this.text.length) {
+      this.isGameStarted = false;
+      this.isEndDialogShown = true;
+      this.dialog.nativeElement.showModal();
+      if (this.tokenService.isTokenValid) {
         const score: Score = {
-          Id: 0,
+          UserId: this.tokenService.userId!,
           Speed: this.bestSpeed,
           Accuracy: this.accuracy,
         };
-        console.log(score);
+        //TODO!: uncomment this
         //this.userService.addScore(score).subscribe();
-        this.dialog.nativeElement.showModal();
-        if (this.interval) {
-          clearInterval(this.interval);
-        }
-        this.writtenText = '';
-        this.errorCount = 0;
-        this.currentWordIndex = 0;
-        // FIXME: reset colors
       }
-    } else {
-      console.log('Set `isGameStarted` to true');
-      this.isGameStarted = true;
-      this.startedAt = new Date().getTime();
-      this.interval = setInterval(() => {
-        this.calculateSpeed();
-      }, 1000);
+      // FIXME: reset colors
     }
   }
 
@@ -107,7 +105,10 @@ export class HomeComponent implements OnDestroy {
     }
   }
 
-  constructor(private userService: UserService) {}
+  constructor(
+    private userService: UserService,
+    private tokenService: TokenService
+  ) {}
 
   ngOnDestroy(): void {
     if (this.interval) {
@@ -115,13 +116,40 @@ export class HomeComponent implements OnDestroy {
     }
   }
 
-  private calculateSpeed() {
-    const now = new Date().getTime();
-    const numerator = Math.abs(this.currentWordIndex / 5 - this.errorCount);
-    const denominator = (now - this.startedAt) / 1000 / 60;
-    let currentSpeed = Math.ceil(numerator / denominator);
-    this.bestSpeed = Math.max(this.bestSpeed, currentSpeed);
-    this.speed = currentSpeed;
+  closeDialog(): void {
+    this.dialog.nativeElement.close();
+    this.reset();
+  }
+
+  private init(): void {
+    console.log('Set `isGameStarted` to true');
+    this.isGameStarted = true;
+    this.startedAt = new Date().getTime();
+    this.interval = setInterval(() => {
+      this.calculateSpeed();
+    }, 100);
+  }
+
+  private reset(): void {
+    if (this.interval) {
+      clearInterval(this.interval);
+    }
+    this.isGameStarted = false;
+    this.errorCount = 0;
+    this.currentWordIndex = 0;
+    this.bestSpeed = 0;
+    this.speed = 0;
+  }
+
+  private calculateSpeed(): void {
+    if (!this.isEndDialogShown) {
+      const now = new Date().getTime();
+      const numerator = Math.abs(this.currentWordIndex / 5 - this.errorCount);
+      const denominator = (now - this.startedAt) / 1000 / 60;
+      let currentSpeed = Math.ceil(numerator / denominator);
+      this.bestSpeed = Math.max(this.bestSpeed, currentSpeed);
+      this.speed = currentSpeed;
+    }
   }
 
   public getClass(
