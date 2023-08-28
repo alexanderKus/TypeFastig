@@ -1,8 +1,8 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnDestroy, ViewChild } from '@angular/core';
 import { UserService } from '../../services/user.service';
 import { LoginModel } from '../../models/login.model';
 import { RegisterModel } from '../../models/register.model';
-import { catchError } from 'rxjs';
+import { Subscription, catchError } from 'rxjs';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 
@@ -11,7 +11,7 @@ import { AuthService } from '../../services/auth.service';
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
 })
-export class LoginComponent {
+export class LoginComponent implements OnDestroy {
   isLogging: boolean = true;
   loginModel: LoginModel = {
     username: '',
@@ -24,12 +24,13 @@ export class LoginComponent {
   };
   @ViewChild('dialog') dialog!: ElementRef<HTMLDialogElement>;
   dialogMessage: string = '';
+  subscriptions: Subscription[] = [];
 
-  constructor(
-    private userService: UserService,
-    private authService: AuthService,
-    private router: Router
-  ) {}
+  constructor(private authService: AuthService, private router: Router) {}
+
+  ngOnDestroy(): void {
+    this.subscriptions.forEach((sub) => sub.unsubscribe());
+  }
 
   swapMode() {
     this.isLogging = !this.isLogging;
@@ -37,42 +38,46 @@ export class LoginComponent {
 
   login() {
     if (this.isLoginModelValid()) {
-      this.authService
-        .login(this.loginModel)
-        .pipe(
-          catchError((err) => {
-            this.dialogMessage = 'Something went wrong';
-            this.dialog.nativeElement.showModal();
-            this.clearModels();
-            return err;
+      this.subscriptions.push(
+        this.authService
+          .login(this.loginModel)
+          .pipe(
+            catchError((err) => {
+              this.dialogMessage = 'Something went wrong';
+              this.dialog.nativeElement.showModal();
+              this.clearModels();
+              return err;
+            })
+          )
+          .subscribe((res) => {
+            if (!!res) {
+              this.router.navigate(['/']);
+            }
           })
-        )
-        .subscribe((res) => {
-          if (!!res) {
-            this.router.navigate(['/']);
-          }
-        });
+      );
     }
   }
 
   register() {
     if (this.isRegisterModelValid()) {
       // TODO: validate password
-      this.authService
-        .register(this.registerModel)
-        .pipe(
-          catchError((err) => {
-            this.dialogMessage = 'Something went wrong';
-            this.dialog.nativeElement.showModal();
-            this.clearModels();
-            return err;
+      this.subscriptions.push(
+        this.authService
+          .register(this.registerModel)
+          .pipe(
+            catchError((err) => {
+              this.dialogMessage = 'Something went wrong';
+              this.dialog.nativeElement.showModal();
+              this.clearModels();
+              return err;
+            })
+          )
+          .subscribe((res) => {
+            if (!!res) {
+              this.router.navigate(['/']);
+            }
           })
-        )
-        .subscribe((res) => {
-          if (!!res) {
-            this.router.navigate(['/']);
-          }
-        });
+      );
       return;
     }
     this.dialogMessage = 'Minimum length of username and password is 8';

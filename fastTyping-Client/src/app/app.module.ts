@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -17,6 +17,7 @@ import { environment } from 'src/environments/environment';
 import { MatTableModule } from '@angular/material/table';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatTabsModule } from '@angular/material/tabs';
+import { NgxSpinnerModule } from 'ngx-spinner';
 
 @NgModule({
   declarations: [
@@ -34,6 +35,7 @@ import { MatTabsModule } from '@angular/material/tabs';
     FormsModule,
     MatTableModule,
     MatTabsModule,
+    NgxSpinnerModule.forRoot({ type: 'ball-scale-multiple' }),
     JwtModule.forRoot({
       config: {
         tokenGetter: tokenGetter,
@@ -45,5 +47,6 @@ import { MatTabsModule } from '@angular/material/tabs';
   ],
   providers: [CookieService],
   bootstrap: [AppComponent],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class AppModule {}

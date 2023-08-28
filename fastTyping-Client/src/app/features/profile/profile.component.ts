@@ -1,5 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Chart } from 'chart.js/auto';
+import { NgxSpinnerService } from 'ngx-spinner';
+import { Subscription } from 'rxjs';
 import { Score } from 'src/app/core/models/score.model';
 import { TokenService } from 'src/app/core/services/token.service';
 import { UserService } from 'src/app/core/services/user.service';
@@ -9,7 +11,7 @@ import { UserService } from 'src/app/core/services/user.service';
   templateUrl: './profile.component.html',
   styleUrls: ['./profile.component.scss'],
 })
-export class ProfileComponent implements OnInit {
+export class ProfileComponent implements OnInit, OnDestroy {
   username: string = '';
   bestSpeedScore: Score = {
     Id: 0,
@@ -24,27 +26,41 @@ export class ProfileComponent implements OnInit {
   history: Score[] = [];
   columns: string[] = ['position', 'Accuracy', 'Speed'];
   plot: any;
+  subscriptions: Subscription[] = [];
 
   constructor(
     private userService: UserService,
-    private tokenService: TokenService
+    private tokenService: TokenService,
+    private spinner: NgxSpinnerService
   ) {}
 
+  ngOnDestroy(): void {
+    this.subscriptions.forEach((sub) => sub.unsubscribe());
+  }
+
   ngOnInit(): void {
+    this.spinner.show();
     this.username = this.tokenService.username;
     let userId: number | undefined = this.tokenService.userId;
     if (userId) {
-      this.userService.getUserBestSpeedScore(userId).subscribe((score) => {
-        this.bestSpeedScore = score;
-      });
-      this.userService.getUserBestAccuracyScore(userId).subscribe((score) => {
-        this.bestAccuracyScore = score;
-      });
-      this.userService.getScoreHistory(userId).subscribe((scores) => {
-        this.history = scores;
-        this.fixPosition();
-        this.createPlot();
-      });
+      this.subscriptions.push(
+        this.userService.getUserBestSpeedScore(userId).subscribe((score) => {
+          this.bestSpeedScore = score;
+        })
+      );
+      this.subscriptions.push(
+        this.userService.getUserBestAccuracyScore(userId).subscribe((score) => {
+          this.bestAccuracyScore = score;
+        })
+      );
+      this.subscriptions.push(
+        this.userService.getScoreHistory(userId).subscribe((scores) => {
+          this.history = scores;
+          this.fixPosition();
+          this.createPlot();
+          this.spinner.hide();
+        })
+      );
     }
   }
 
