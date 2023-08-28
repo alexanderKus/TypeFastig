@@ -26,6 +26,8 @@ public class ScoreRepository : IScoreRepository
         return _context.Scores
             .AsNoTracking()
             .Where(x => x.UserId == userId)
+            .OrderByDescending(x => x.Id)
+            .Take(100)
             .Select(x => new ScoreDto(
                 x.Id,
                 x.Accuracy,

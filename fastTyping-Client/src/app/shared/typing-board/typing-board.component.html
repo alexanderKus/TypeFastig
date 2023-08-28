@@ -1,0 +1,25 @@
+<div class="container">
+  <div class="error">Errors: {{ errorCount }}</div>
+  <div class="speed">Speed: {{ speed }} WPM</div>
+  <div class="custom-line"></div>
+  <div
+    class="line"
+    *ngFor="let line of textModel?.lines; let lineIndex = index"
+  >
+    <div class="word" *ngFor="let word of line?.line; let wordIndex = index">
+      <div
+        class="letter"
+        *ngFor="let letter of word?.letter; let letterIndex = index"
+        [ngClass]="getClass(letter, lineIndex, wordIndex, letterIndex)"
+      >
+        {{ letter }}
+      </div>
+      &nbsp;
+    </div>
+  </div>
+  <dialog #dialog>
+    Summary: WPM: {{ bestSpeed }}, Accuracy: {{ accuracy }}%, Errors:
+    {{ errorCount }}
+    <button type="button" (click)="closeDialog()">X</button>
+  </dialog>
+</div>
