@@ -7,9 +7,9 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   constructor() {
-    const appUser = navigator.userAgent;
-    const screenSize = screen.width + 'x' + screen.height;
-    console.log('AppUser: ' + appUser);
-    console.log('Screen : ' + screenSize);
+    // const appUser = navigator.userAgent;
+    // const screenSize = screen.width + 'x' + screen.height;
+    // console.log('AppUser: ' + appUser);
+    // console.log('Screen : ' + screenSize);
   }
 }

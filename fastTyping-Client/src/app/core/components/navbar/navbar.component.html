@@ -7,6 +7,14 @@
     </div>
   </div>
   <div class="navbar-right">
-    <div><a [routerLink]="['/profile']">Profile</a></div>
+    <ng-container *ngIf="authService.isLoggedIn | async">
+      <div><a [routerLink]="['/profile']">Profile</a></div>
+      <button type="button" (click)="logout()">Log_out</button>
+    </ng-container>
+    <ng-container *ngIf="!(authService.isLoggedIn | async)">
+      <div>
+        <a [routerLink]="['/login']">Log_In</a>
+      </div>
+    </ng-container>
   </div>
 </div>

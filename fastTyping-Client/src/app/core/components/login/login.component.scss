@@ -1,0 +1,25 @@
+.login-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+  align-items: center;
+  margin: auto;
+
+  input {
+    margin: 0.2rem;
+
+    &:focus {
+      outline: none;
+    }
+  }
+
+  label {
+    min-width: 150px;
+  }
+
+  button {
+    margin-top: 0.2rem;
+    width: 200px;
+  }
+}

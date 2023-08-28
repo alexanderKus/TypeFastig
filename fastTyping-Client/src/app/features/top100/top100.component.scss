@@ -1,0 +1,23 @@
+@import "../../../variables.scss";
+
+.mat-mdc-tab-group::ng-deep {
+  --mdc-tab-indicator-active-indicator-color: $font-color;
+  --mat-tab-header-active-label-text-color: $font-color;
+  --mat-tab-header-active-ripple-color: $font-color;
+  --mat-tab-header-inactive-ripple-color: $font-color;
+  --mat-tab-header-active-focus-label-text-color: $font-color;
+  --mat-tab-header-active-hover-label-text-color: $font-color;
+  --mat-tab-header-active-focus-indicator-color: $font-color;
+  --mat-tab-header-active-hover-indicator-color: $font-color;
+  --mat-tab-header-inactive-label-text-color: $font-color;
+  --mat-tab-header-inactive-hover-label-text-color: $font-color;
+}
+
+mat-tab-group {
+  margin: 1rem;
+}
+table {
+  width: auto;
+  background-color: $background-color;
+  columns: $font-color;
+}

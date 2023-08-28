@@ -1,0 +1,19 @@
+@import "../../../variables.scss";
+
+.info > div {
+  margin: 1rem;
+  & > div {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+  }
+}
+
+table {
+  width: auto;
+  background-color: $background-color;
+  columns: $font-color;
+}
+
+.history {
+  margin-bottom: 1rem;
+}

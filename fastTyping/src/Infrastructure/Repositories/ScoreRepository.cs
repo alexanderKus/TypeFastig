@@ -34,6 +34,38 @@ public class ScoreRepository : IScoreRepository
             .ToListAsync();
     }
 
+    // TODO: Try to use AsyncEnumerable
+    public Task<List<ScoreInfoDto>> GetTop100ScoresByAccuracyAsnyc()
+    {
+        return _context.Scores
+            .AsNoTracking()
+            .OrderByDescending(x => x.Accuracy)
+            .Take(100)
+            .Include(x => x.User)
+            .Select(x => new ScoreInfoDto(
+                x.User.Username,
+                x.Accuracy,
+                x.Speed
+                ))
+            .ToListAsync();
+    }
+
+    // TODO: Try to use AsyncEnumerable
+    public Task<List<ScoreInfoDto>> GetTop100ScoresBySpeedAsync()
+    {
+        return _context.Scores
+            .AsNoTracking()
+            .OrderByDescending(x => x.Speed)
+            .Take(100)
+            .Include(x => x.User)
+            .Select(x => new ScoreInfoDto(
+                x.User.Username,
+                x.Accuracy,
+                x.Speed
+                ))
+            .ToListAsync();
+    }
+
     public Task<ScoreDto?> GetUserBestAccuracyScoreAsync(int userId)
     {
         return _context.Scores

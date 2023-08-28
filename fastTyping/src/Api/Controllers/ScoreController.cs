@@ -7,6 +7,7 @@ using AutoMapper;
 using Domain.Models;
 using Domain.Models.Dtos;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using OneOf;
@@ -66,6 +67,15 @@ public class ScoreController : ApiController
             score => Ok(JsonConvert.SerializeObject(result.Value)),
             error => Problem(
                 detail: result.Value.ToString(), statusCode: (int)HttpStatusCode.NotFound));
+    }
+
+    [AllowAnonymous]
+    [HttpGet("GetTop100Scores")]
+    public async Task<IActionResult> GetTop100Scores()
+    {
+        Top100ScoresQuery top100ScoresQuery = new();
+        Top100ScoresDto scores = await _mediator.Send(top100ScoresQuery);
+        return Ok(scores);
     }
 }
 

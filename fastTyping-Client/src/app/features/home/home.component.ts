@@ -1,12 +1,22 @@
-import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  HostListener,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { Model } from '../models/model';
+import { UserService } from 'src/app/core/services/user.service';
+import { Score } from 'src/app/core/models/score.model';
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss'],
 })
-export class HomeComponent implements OnInit, OnDestroy {
+export class HomeComponent implements OnDestroy {
+  /*
   private text: string = `static void *proc_keys_start(struct seq_file *p, loff_t *_pos)
     __acquires(key_serial_lock) 
 {
@@ -21,8 +31,10 @@ export class HomeComponent implements OnInit, OnDestroy {
   *_pos = key->serial;
   return &key->serial_node;
 }`;
+*/
+  private text: string = 'siema';
   textModel: Model = new Model(this.text);
-  isGameStarted: boolean = true;
+  isGameStarted: boolean = false;
   writtenText: string = '';
   writtenTextModel: Model | undefined;
   currentWordIndex: number = 0;
@@ -31,6 +43,9 @@ export class HomeComponent implements OnInit, OnDestroy {
   interval: any;
   startedAt: number = 0;
   speed: number = 0;
+  bestSpeed: number = 0;
+  accuracy: number = 0;
+  @ViewChild('dialog') dialog!: ElementRef<HTMLDialogElement>;
 
   @HostListener('document:keypress', ['$event'])
   handleKeyboardEvent(event: KeyboardEvent) {
@@ -49,6 +64,35 @@ export class HomeComponent implements OnInit, OnDestroy {
       }
       this.writtenTextModel = new Model(this.writtenText);
       this.currentWordIndex++;
+      this.accuracy =
+        ((this.writtenText.length - this.errorCount) /
+          this.writtenText.length) *
+        100;
+      if (this.currentWordIndex == this.text.length) {
+        this.isGameStarted = false;
+        const score: Score = {
+          Id: 0,
+          Speed: this.bestSpeed,
+          Accuracy: this.accuracy,
+        };
+        console.log(score);
+        //this.userService.addScore(score).subscribe();
+        this.dialog.nativeElement.showModal();
+        if (this.interval) {
+          clearInterval(this.interval);
+        }
+        this.writtenText = '';
+        this.errorCount = 0;
+        this.currentWordIndex = 0;
+        // FIXME: reset colors
+      }
+    } else {
+      console.log('Set `isGameStarted` to true');
+      this.isGameStarted = true;
+      this.startedAt = new Date().getTime();
+      this.interval = setInterval(() => {
+        this.calculateSpeed();
+      }, 1000);
     }
   }
 
@@ -63,23 +107,21 @@ export class HomeComponent implements OnInit, OnDestroy {
     }
   }
 
-  ngOnInit(): void {
-    this.startedAt = new Date().getTime();
-    this.interval = setInterval(() => {
-      this.calculateSpeed();
-    }, 1000);
-  }
+  constructor(private userService: UserService) {}
 
   ngOnDestroy(): void {
     if (this.interval) {
       clearInterval(this.interval);
     }
   }
+
   private calculateSpeed() {
     const now = new Date().getTime();
     const numerator = Math.abs(this.currentWordIndex / 5 - this.errorCount);
     const denominator = (now - this.startedAt) / 1000 / 60;
-    this.speed = Math.ceil(numerator / denominator);
+    let currentSpeed = Math.ceil(numerator / denominator);
+    this.bestSpeed = Math.max(this.bestSpeed, currentSpeed);
+    this.speed = currentSpeed;
   }
 
   public getClass(

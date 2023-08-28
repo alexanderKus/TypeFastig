@@ -1,0 +1,56 @@
+<div class="container">
+  <ng-container *ngIf="isLogging">
+    <div class="login-container">
+      <h1>Log In</h1>
+      <label>
+        Username:
+        <input type="text" [(ngModel)]="loginModel.username" />
+      </label>
+      <label>
+        Password:
+        <input
+          type="password"
+          [(ngModel)]="loginModel.password"
+          (keyup.enter)="login()"
+        />
+      </label>
+      <button type="submit" (click)="login()" [disabled]="!isLoginModelValid()">
+        Log In
+      </button>
+      <button type="button" (click)="swapMode()">Register</button>
+    </div>
+  </ng-container>
+  <ng-container *ngIf="!isLogging">
+    <div class="login-container">
+      <h1>Register</h1>
+      <label>
+        Email:
+        <input type="email" [(ngModel)]="registerModel.email" />
+      </label>
+      <label>
+        Username:
+        <input type="text" [(ngModel)]="registerModel.username" />
+      </label>
+      <label>
+        Password:
+        <input
+          type="password"
+          [(ngModel)]="registerModel.password"
+          (keyup.enter)="login()"
+        />
+      </label>
+      <button
+        type="submit"
+        (click)="register()"
+        [disabled]="!isRegisterModelValid()"
+      >
+        Register
+      </button>
+      <button type="button" (click)="swapMode()">Log In</button>
+    </div>
+  </ng-container>
+  <dialog #dialog>
+    {{ dialogMessage }}
+    <button type="button" (click)="dialog.close()">X</button>
+  </dialog>
+</div>

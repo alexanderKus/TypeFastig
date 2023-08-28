@@ -9,4 +9,6 @@ public interface IScoreRepository
     Task<List<ScoreDto>> GetScoresForUserAsync(int userId);
     Task<ScoreDto?> GetUserBestSpeedScoreAsync(int userId);
     Task<ScoreDto?> GetUserBestAccuracyScoreAsync(int userId);
+    Task<List<ScoreInfoDto>> GetTop100ScoresBySpeedAsync();
+    Task<List<ScoreInfoDto>> GetTop100ScoresByAccuracyAsnyc();
 }

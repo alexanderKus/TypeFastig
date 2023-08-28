@@ -1,1 +1,41 @@
-<p>profile works!</p>
+<div class="container">
+  <div class="info">
+    <div class="username">Username: {{ username }}</div>
+    <div class="best-scores">
+      <div class="score">
+        Best speed: {{ bestSpeedScore.Speed }} WPM with accuracy:
+        {{ bestSpeedScore.Accuracy }}%
+      </div>
+      <div class="score">
+        Best accuracy: {{ bestAccuracyScore.Accuracy }}% with speed:
+        {{ bestAccuracyScore.Speed }} WPM
+      </div>
+    </div>
+    <div class="plot">
+      Plot:
+      <canvas id="plot"></canvas>
+    </div>
+    <div class="history">
+      History:
+      <table mat-table [dataSource]="history" class="mat-elevation-z8">
+        <ng-container matColumnDef="position">
+          <th mat-header-cell *matHeaderCellDef>No.</th>
+          <td mat-cell *matCellDef="let element">{{ element.Id }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="Accuracy">
+          <th mat-header-cell *matHeaderCellDef>Accuracy</th>
+          <td mat-cell *matCellDef="let element">{{ element.Accuracy }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="Speed">
+          <th mat-header-cell *matHeaderCellDef>Speed</th>
+          <td mat-cell *matCellDef="let element">{{ element.Speed }}</td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="columns"></tr>
+        <tr mat-row *matRowDef="let row; columns: columns"></tr>
+      </table>
+    </div>
+  </div>
+</div>

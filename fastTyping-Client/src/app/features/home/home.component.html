@@ -18,4 +18,9 @@
       &nbsp;
     </div>
   </div>
+  <dialog #dialog>
+    Summary: WPM: {{ bestSpeed }}, Accuracy: {{ accuracy }}%, Errors:
+    {{ errorCount }}
+    <button type="button" (click)="dialog.close()">X</button>
+  </dialog>
 </div>
