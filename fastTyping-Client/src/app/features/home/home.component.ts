@@ -3,11 +3,9 @@ import {
   ElementRef,
   HostListener,
   OnDestroy,
-  OnInit,
   ViewChild,
 } from '@angular/core';
 import { Model } from '../models/model';
-import { UserService } from 'src/app/core/services/user.service';
 import { Score } from 'src/app/core/models/score.model';
 import { TokenService } from 'src/app/core/services/token.service';
 
@@ -57,7 +55,8 @@ export class HomeComponent implements OnDestroy {
   handleKeyboardEvent(event: KeyboardEvent) {
     if (this.isEndDialogShown) {
       return;
-    } else if (!this.isGameStarted) {
+    }
+    if (!this.isGameStarted) {
       this.init();
     }
     let letter = this.textModel.getLetterFromIndex(this.currentWordIndex);
@@ -90,7 +89,6 @@ export class HomeComponent implements OnDestroy {
         //TODO!: uncomment this
         //this.userService.addScore(score).subscribe();
       }
-      // FIXME: reset colors
     }
   }
 
@@ -105,10 +103,7 @@ export class HomeComponent implements OnDestroy {
     }
   }
 
-  constructor(
-    private userService: UserService,
-    private tokenService: TokenService
-  ) {}
+  constructor(private tokenService: TokenService) {}
 
   ngOnDestroy(): void {
     if (this.interval) {
@@ -119,10 +114,10 @@ export class HomeComponent implements OnDestroy {
   closeDialog(): void {
     this.dialog.nativeElement.close();
     this.reset();
+    this.isEndDialogShown = false;
   }
 
   private init(): void {
-    console.log('Set `isGameStarted` to true');
     this.isGameStarted = true;
     this.startedAt = new Date().getTime();
     this.interval = setInterval(() => {
@@ -134,7 +129,8 @@ export class HomeComponent implements OnDestroy {
     if (this.interval) {
       clearInterval(this.interval);
     }
-    this.isGameStarted = false;
+    this.writtenText = '';
+    this.writtenTextModel = new Model(this.writtenText);
     this.errorCount = 0;
     this.currentWordIndex = 0;
     this.bestSpeed = 0;
@@ -142,7 +138,7 @@ export class HomeComponent implements OnDestroy {
   }
 
   private calculateSpeed(): void {
-    if (!this.isEndDialogShown) {
+    if (this.isGameStarted) {
       const now = new Date().getTime();
       const numerator = Math.abs(this.currentWordIndex / 5 - this.errorCount);
       const denominator = (now - this.startedAt) / 1000 / 60;
