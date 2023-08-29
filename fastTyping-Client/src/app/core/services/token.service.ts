@@ -15,13 +15,7 @@ export class TokenService {
   }
 
   public get isTokenValid(): boolean {
-    let expired = false;
-    if (this.token) {
-      let decoded: any = jwt_decode(this.token!);
-      const expiredDate = new Date(decoded.exp);
-      expired = expiredDate > new Date() ? true : false;
-    }
-    if (!this.isTokenInCookies() && expired) {
+    if (!this.isTokenInCookies()) {
       this.token = undefined;
       return false;
     }
@@ -46,8 +40,9 @@ export class TokenService {
 
   public setToken(token: string): void {
     this.token = token;
+    let decoded: any = jwt_decode(this.token!);
     this.cookieService.set('auth_token', token, {
-      expires: 1,
+      expires: decoded.exp,
       secure: true,
     });
   }
