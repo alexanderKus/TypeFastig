@@ -1,0 +1,15 @@
+name: dotnet package
+on: [push]
+jobs:
+  build-dotnet:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup .Net 6 v6.0.403
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: "6.0.403"
+      - name: Install dependencies
+        run: dotnet restore fastTyping/fastTyping.sln
+      - name: Build
+        run: dotnet build fastTyping/fastTyping.sln --configuration Release --no-restore
