@@ -12,6 +12,7 @@
     <None Remove="Models\Enums\" />
     <None Remove="Models\Entities\" />
     <None Remove="Models\Dtos\" />
+    <None Remove="Models\Room\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Models\" />
@@ -19,5 +20,6 @@
     <Folder Include="Models\Enums\" />
     <Folder Include="Models\Entities\" />
     <Folder Include="Models\Dtos\" />
+    <Folder Include="Models\Room\" />
   </ItemGroup>
 </Project>

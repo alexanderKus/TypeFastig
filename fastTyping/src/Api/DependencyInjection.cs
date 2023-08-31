@@ -14,9 +14,10 @@ public static class DependencyInjection
             options.AddPolicy(name: MyAllowSpecificOrigins,
                               policy =>
                               {
-                                  policy.AllowAnyOrigin()
+                                  policy.WithOrigins("http://localhost:4200")
+                                    .AllowAnyHeader()
                                     .AllowAnyMethod()
-                                    .AllowAnyHeader();
+                                    .AllowCredentials();
                               });
         });
         return services;

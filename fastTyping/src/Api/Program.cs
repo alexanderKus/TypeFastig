@@ -1,4 +1,5 @@
 using Api;
+using Api.SingalR;
 using Application;
 using Infrastructure;
 
@@ -10,6 +11,7 @@ builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddApi();
 
 builder.Services.AddControllers();
+builder.Services.AddSignalR();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -32,5 +34,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.MapHub<RoomHub>("/roomHub");
 
 app.Run();

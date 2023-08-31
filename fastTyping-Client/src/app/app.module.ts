@@ -20,6 +20,7 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { TypingBoardComponent } from './shared/typing-board/typing-board.component';
 import { RoomComponent } from './features/room/room.component';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 
 @NgModule({
   declarations: [
@@ -39,6 +40,7 @@ import { RoomComponent } from './features/room/room.component';
     FormsModule,
     MatTableModule,
     MatTabsModule,
+    MatProgressBarModule,
     NgxSpinnerModule.forRoot({ type: 'ball-scale-multiple' }),
     JwtModule.forRoot({
       config: {

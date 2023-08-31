@@ -1,0 +1,23 @@
+.container > * {
+  margin: 1rem;
+}
+
+.progress-bars {
+  margin: auto;
+
+  .player-progress-bar {
+    padding-top: 1rem;
+    display: flex;
+    flex-direction: row;
+    text-align: center;
+    align-items: center;
+
+    .player-name {
+      text-align: left;
+      margin-right: 0.2rem;
+      min-width: 200px;
+      max-width: 200px;
+      overflow: hidden;
+    }
+  }
+}

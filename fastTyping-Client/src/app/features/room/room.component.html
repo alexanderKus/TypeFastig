@@ -1,3 +1,27 @@
 <div class="container">
-  <p>Coming soon..</p>
+  <ng-container *ngIf="!(isInRoom$ | async)">
+    <div class="search-for-game">
+      <span class="room-info-section">
+        <h1>What is room ?</h1>
+        <p>Room is a place where you can compete against other people</p>
+        <h1>Who wins?</h1>
+        <p>Whoever first will finish typing whole code</p>
+        <h2>To join click button 'Join Room'</h2>
+      </span>
+      <button (click)="joinRoom()">Join Room</button>
+    </div>
+  </ng-container>
+  <ng-container *ngIf="isInRoom$ | async">
+    <div class="progress-bars" *ngIf="stats$ | async as stats">
+      <div class="player-progress-bar" *ngFor="let player of stats">
+        <span class="player-name"> {{ player.name }} </span>:
+        <mat-progress-bar
+          mode="determinate"
+          [value]="player.progress"
+        ></mat-progress-bar>
+      </div>
+    </div>
+    <button style="margin-top: 0" (click)="leaveRoom()">Leave Room</button>
+    <app-typing-board></app-typing-board>
+  </ng-container>
 </div>

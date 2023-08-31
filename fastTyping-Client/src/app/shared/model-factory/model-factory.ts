@@ -42,7 +42,6 @@ class AdagradOptimizer(optimizer.Optimizer):
   self._learning_rate_tensor = None
 `,
     ],
-    [2, `beka`],
   ]);
 
   public static createModel(easyMode: boolean = false): Model {

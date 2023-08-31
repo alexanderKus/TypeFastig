@@ -10,7 +10,9 @@
 
 - [+] create top 100 ranking
 
-- [ ] creating rooms  <- BIG
+- [+] creating rooms  <- BIG
+
+- [ ] show special info at the end of room
 
 - [ ] write tests ???
 
@@ -20,45 +22,8 @@
 
 - [+] add some kind of spinner
 
------------------------------
-userProfiles: {
-  username: '',
-  scores: {
-    withBestSpeed: {spped: 190, accuracy: 70},
-    withBestAccuracy: {spped: 150, accuracy: 90}
-  }
-}
+- [ ] Typing board emit event if typing is done
 
-userHistory: {
-  pageNumber: 0,
-  pageSize: 10,
-  data: [
-    {spped: 0, accuracy: 0},
-    {spped: 1, accuracy: 1},
-    ...
-  ]
-}
+- [ ] Refactor model folder strucutre at backend
 
-AuthService {
-  login();
-  logout();
-  register();
-}
-
-UserService {
-  bestAccuarcy();
-  bestSpeed();
-  history();
-  addScore();
-}
-
-ScoreSerivce {
-  top100();
-}
-
-RoomService {
-  joinRoom();
-  leaveRoom();
-}
-
-
+- [ ] Create special interface for RoomHub
