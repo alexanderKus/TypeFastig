@@ -1,7 +1,7 @@
 using Api;
-using Api.SingalR;
 using Application;
 using Infrastructure;
+using Infrastructure.SignalR;
 
 var MyAllowSpecificOrigins = "_allowAllOrigins";
 var builder = WebApplication.CreateBuilder(args);

@@ -1,13 +1,12 @@
-﻿using System;
-using Domain.Models.Dtos;
-using Domain.Models.Room;
+﻿using Domain.Models.Dtos;
+using RoomModel = Domain.Models.Room;
 
 namespace Application.Interfaces.Services;
 
 public interface IRoomService
 {
-    Room JoinRoom(Player player);
-    Room? LeaveRoom(string userConnectionId);
-    Room? UpdateStats(Guid roomId, Player player);
+    RoomModel.Room JoinRoom(RoomModel.Player player);
+    RoomModel.Room? LeaveRoom(string userConnectionId);
+    RoomModel.Room? UpdateStats(Guid roomId, RoomModel.Player player);
     IEnumerable<PlayerDto> GetStats(Guid roomId);
 }

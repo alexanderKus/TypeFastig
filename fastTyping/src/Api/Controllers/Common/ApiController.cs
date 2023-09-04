@@ -11,5 +11,9 @@ public class ApiController : ControllerBase
     public ApiController()
     {
     }
-}
 
+    //protected IActionResult Problem()
+    //{
+    //    throw new NotImplementedException();
+    //}
+}

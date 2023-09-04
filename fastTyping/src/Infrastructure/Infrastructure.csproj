@@ -33,6 +33,7 @@
     <None Remove="Database\Migrations\" />
     <None Remove="Auth\" />
     <None Remove="Services\" />
+    <None Remove="SignalR\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Repositories\" />
@@ -40,5 +41,6 @@
     <Folder Include="Database\Migrations\" />
     <Folder Include="Auth\" />
     <Folder Include="Services\" />
+    <Folder Include="SignalR\" />
   </ItemGroup>
 </Project>

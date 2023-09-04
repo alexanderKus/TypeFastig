@@ -24,6 +24,8 @@
     <None Remove="Score\Common\" />
     <None Remove="Scores\" />
     <None Remove="Room\" />
+    <None Remove="Room\Commands\" />
+    <None Remove="Room\Queries\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Interfaces\" />
@@ -41,6 +43,8 @@
     <Folder Include="Scores\Common\" />
     <Folder Include="Scores\" />
     <Folder Include="Room\" />
+    <Folder Include="Room\Commands\" />
+    <Folder Include="Room\Queries\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />

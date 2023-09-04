@@ -26,7 +26,8 @@ public static class DependencyInjection
         services.AddSingleton<IDateTimeProvider, DateTimeProvider>();
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IScoreRepository, ScoreRepository>();
-        services.AddSingleton<IRoomService, RoomService>();
+        services.AddScoped<IRoomService, RoomService>();
+        services.AddScoped<IRoomHubService, RoomHubService>();
 
         services.AddScoped<IUnitOfWork, UnitOfWork>();
 
