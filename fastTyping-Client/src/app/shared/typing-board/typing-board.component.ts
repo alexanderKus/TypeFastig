@@ -30,7 +30,7 @@ static void *proc_keys_start(struct seq_file *p, loff_t *_pos)
     return NULL;
   *_pos = key->serial;
   return &key->serial_node;
-}`;
+}`; // TODO: move this to factory
   xE = new TextEditor(this.x);
   y = '';
   yE = new TextEditor(this.y);
@@ -124,6 +124,28 @@ static void *proc_keys_start(struct seq_file *p, loff_t *_pos)
     this.isEndDialogShown = false;
   }
 
+  getStyleClassForCurrentLetter(lineIndex: number, wordIndex: number): string {
+    let index = this.calculateCorrentIndex(lineIndex, wordIndex);
+    if (index === this.currentWordIndex) {
+      return 'current-letter';
+    }
+    return '';
+  }
+
+  getStyleClass(letter: string, lineIndex: number, wordIndex: number): string {
+    let index = this.calculateCorrentIndex(lineIndex, wordIndex);
+    const xEChar = this.xE.getCharAtIndex(index);
+    const yEChar = this.yE.getCharAtIndex(index);
+    if (xEChar === yEChar) {
+      return 'correct-letter';
+    } else {
+      if (letter === ' ' || xEChar === ' ') {
+        return 'space';
+      }
+      return 'wrong-letter';
+    }
+  }
+
   private init(): void {
     this.isGameStarted = true;
     this.startedAt = new Date().getTime();
@@ -153,28 +175,6 @@ static void *proc_keys_start(struct seq_file *p, loff_t *_pos)
       let currentSpeed = Math.ceil(numerator / denominator);
       this.bestSpeed = Math.max(this.bestSpeed, currentSpeed);
       this.speed = currentSpeed;
-    }
-  }
-
-  getStyleClassForCurrentLetter(lineIndex: number, wordIndex: number): string {
-    let index = this.calculateCorrentIndex(lineIndex, wordIndex);
-    if (index === this.currentWordIndex) {
-      return 'current-letter';
-    }
-    return '';
-  }
-
-  getStyleClass(letter: string, lineIndex: number, wordIndex: number): string {
-    let index = this.calculateCorrentIndex(lineIndex, wordIndex);
-    const xEChar = this.xE.getCharAtIndex(index);
-    const yEChar = this.yE.getCharAtIndex(index);
-    if (xEChar === yEChar) {
-      return 'correct-letter';
-    } else {
-      if (letter === ' ' || xEChar === ' ') {
-        return 'space';
-      }
-      return 'wrong-letter';
     }
   }
 
