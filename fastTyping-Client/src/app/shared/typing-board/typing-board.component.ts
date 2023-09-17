@@ -7,9 +7,8 @@ import {
 } from '@angular/core';
 import { Score } from 'src/app/core/models/score.model';
 import { TokenService } from 'src/app/core/services/token.service';
-import { Model } from 'src/app/features/models/model';
-import { ModelFactory } from '../model-factory/model-factory';
 import { UserService } from 'src/app/core/services/user.service';
+import { TextEditor } from '../textEditor';
 
 @Component({
   selector: 'app-typing-board',
@@ -17,13 +16,27 @@ import { UserService } from 'src/app/core/services/user.service';
   styleUrls: ['./typing-board.component.scss'],
 })
 export class TypingBoardComponent implements OnDestroy {
+  x = `\
+static void *proc_keys_start(struct seq_file *p, loff_t *_pos)
+  __acquires(key_serial_lock)
+{
+  key_serial_t pos = *_pos;
+	struct key *key;
+  spin_lock(&key_serial_lock);
+  if (*_pos > INT_MAX)
+    return NULL;
+  key = find_ge_key(p, pos);
+  if (!key)
+    return NULL;
+  *_pos = key->serial;
+  return &key->serial_node;
+}`;
+  xE = new TextEditor(this.x);
+  y = '';
+  yE = new TextEditor(this.y);
+
   isGameStarted: boolean = false;
   isEndDialogShown: boolean = false;
-
-  textModel: Model = ModelFactory.createModel();
-
-  writtenText: string = '';
-  writtenTextModel: Model | undefined;
 
   currentWordIndex: number = 0;
   interval: any;
@@ -38,31 +51,34 @@ export class TypingBoardComponent implements OnDestroy {
 
   @HostListener('document:keypress', ['$event'])
   handleKeyboardEvent(event: KeyboardEvent) {
-    if (this.isEndDialogShown) {
-      return;
-    }
     if (!this.isGameStarted) {
       this.init();
     }
-    let letter = this.textModel.getLetterFromIndex(this.currentWordIndex);
-    let isLetter = this.textModel.isLetterFromIndex(this.currentWordIndex);
-    if (event.key === ' ' && isLetter) {
-      this.writtenText += '.';
+    if (this.currentWordIndex > this.xE.text.length) {
+      return;
     } else if (event.key === 'Enter') {
-      this.writtenText += '\n';
-    } else {
-      this.writtenText += event.key;
+      return;
     }
-    if (event.key !== letter) {
-      this.errorCount++;
-    }
-    this.writtenTextModel = new Model(this.writtenText);
+    this.y += event.key;
     this.currentWordIndex++;
-    this.accuracy = Math.abs(
-      ((this.writtenText.length - this.errorCount) / this.writtenText.length) *
-        100
+    if (this.xE.getCharAtIndex(this.currentWordIndex) === '\n') {
+      this.y += '\n';
+      this.currentWordIndex++;
+    }
+    this.yE = new TextEditor(this.y);
+    console.clear();
+    console.log(
+      `${this.currentWordIndex}\n${this.yE.text}\n${this.yE.getCharAtIndex(
+        this.currentWordIndex - 1
+      )}\n${this.xE.text.substring(
+        0,
+        this.currentWordIndex
+      )}\n${this.xE.getCharAtIndex(this.currentWordIndex - 1)}`
     );
-    if (this.currentWordIndex == this.textModel.length) {
+    this.accuracy = Math.abs(
+      ((this.y.length - this.errorCount) / this.y.length) * 100
+    );
+    if (this.currentWordIndex == this.xE.text.length) {
       this.isGameStarted = false;
       this.isEndDialogShown = true;
       this.dialog.nativeElement.showModal();
@@ -79,12 +95,15 @@ export class TypingBoardComponent implements OnDestroy {
 
   @HostListener('document:keydown.backspace', ['$event'])
   handleBackSpaceEvent(event: KeyboardEvent) {
-    if (this.isGameStarted && this.writtenText.length > 0) {
-      this.writtenText = this.writtenText.slice(0, this.writtenText.length - 1);
-      this.writtenTextModel = new Model(this.writtenText);
-    }
-    if (this.currentWordIndex > 0) {
-      this.currentWordIndex--;
+    if (this.y.length > 0) {
+      if (this.yE.getCharAtIndex(this.currentWordIndex - 1) === '\n') {
+        this.currentWordIndex -= 2;
+        this.y = this.y.substring(0, this.y.length - 2);
+      } else {
+        this.y = this.y.substring(0, this.y.length - 1);
+        this.currentWordIndex--;
+      }
+      this.yE = new TextEditor(this.y);
     }
   }
 
@@ -117,9 +136,9 @@ export class TypingBoardComponent implements OnDestroy {
     if (this.interval) {
       clearInterval(this.interval);
     }
-    this.writtenText = '';
-    this.writtenTextModel = ModelFactory.createEmptyModel();
-    this.textModel = ModelFactory.createModel();
+    // TODO: gerenate new xE
+    this.y = '';
+    this.yE = new TextEditor('');
     this.errorCount = 0;
     this.currentWordIndex = 0;
     this.bestSpeed = 0;
@@ -137,44 +156,34 @@ export class TypingBoardComponent implements OnDestroy {
     }
   }
 
-  public getClass(
-    letter: string,
-    lineIndex: number,
-    wordIndex: number,
-    letterIndex: number
-  ): string {
-    if (!this.exists(lineIndex, wordIndex, letterIndex)) {
-      return 'neutral-letter';
+  getStyleClassForCurrentLetter(lineIndex: number, wordIndex: number): string {
+    let index = this.calculateCorrentIndex(lineIndex, wordIndex);
+    if (index === this.currentWordIndex) {
+      return 'current-letter';
     }
-    if (this.isCorrect(letter, lineIndex, wordIndex, letterIndex)) {
+    return '';
+  }
+
+  getStyleClass(letter: string, lineIndex: number, wordIndex: number): string {
+    let index = this.calculateCorrentIndex(lineIndex, wordIndex);
+    const xEChar = this.xE.getCharAtIndex(index);
+    const yEChar = this.yE.getCharAtIndex(index);
+    if (xEChar === yEChar) {
       return 'correct-letter';
     } else {
+      if (letter === ' ' || xEChar === ' ') {
+        return 'space';
+      }
       return 'wrong-letter';
     }
   }
 
-  public exists(
-    lineIndex: number,
-    wordIndex: number,
-    letterIndex: number
-  ): boolean {
-    let letter =
-      this.writtenTextModel?.lines[lineIndex]?.line[wordIndex]?.letter[
-        letterIndex
-      ];
-    return letter !== undefined;
-  }
-
-  public isCorrect(
-    letter: string,
-    lineIndex: number,
-    wordIndex: number,
-    letterIndex: number
-  ): boolean {
-    return (
-      this.writtenTextModel?.lines[lineIndex]?.line[wordIndex]?.letter[
-        letterIndex
-      ] == letter
-    );
+  private calculateCorrentIndex(lineIndex: number, wordIndex: number): number {
+    let index = 0;
+    for (let i = 0; i < lineIndex; i++) {
+      index += this.xE.lines[i].length + 1; // +1 because of '\n'
+    }
+    index += wordIndex;
+    return index;
   }
 }

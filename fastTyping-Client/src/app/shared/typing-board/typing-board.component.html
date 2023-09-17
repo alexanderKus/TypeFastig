@@ -2,24 +2,26 @@
   <div class="error">Errors: {{ errorCount }}</div>
   <div class="speed">Speed: {{ speed }} WPM</div>
   <div class="custom-line"></div>
-  <div
-    class="line"
-    *ngFor="let line of textModel?.lines; let lineIndex = index"
-  >
-    <div class="word" *ngFor="let word of line?.line; let wordIndex = index">
-      <div
-        class="letter"
-        *ngFor="let letter of word?.letter; let letterIndex = index"
-        [ngClass]="getClass(letter, lineIndex, wordIndex, letterIndex)"
-      >
-        {{ letter }}
-      </div>
-      &nbsp;
+  <div class="text-wrapper">
+    <div class="lines-wrapper">
+      <pre *ngFor="let line of xE.lines; let i = index">
+      <span *ngFor="let char of line.split(''); let j = index"
+          [ngClass]="getStyleClassForCurrentLetter(i,j)">{{ char }}</span>
+      </pre>
     </div>
+    <div class="lines-wrapper">
+      <pre
+        *ngFor="let line of yE.lines; let i = index"
+        style="width: fit-content"
+      >
+      <span *ngFor="let char of line.split(''); let j = index"
+          [ngClass]="getStyleClass(char, i, j)">{{ char }}</span>
+      </pre>
+    </div>
+    <dialog #dialog>
+      Summary: WPM: {{ bestSpeed }}, Accuracy: {{ accuracy }}%, Errors:
+      {{ errorCount }}
+      <button type="button" (click)="closeDialog()">X</button>
+    </dialog>
   </div>
-  <dialog #dialog>
-    Summary: WPM: {{ bestSpeed }}, Accuracy: {{ accuracy }}%, Errors:
-    {{ errorCount }}
-    <button type="button" (click)="closeDialog()">X</button>
-  </dialog>
 </div>
