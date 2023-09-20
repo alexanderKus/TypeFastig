@@ -1,13 +1,4 @@
-import {
-  Component,
-  ElementRef,
-  HostListener,
-  OnDestroy,
-  ViewChild,
-} from '@angular/core';
-import { Model } from '../models/model';
-import { Score } from 'src/app/core/models/score.model';
-import { TokenService } from 'src/app/core/services/token.service';
+import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-home',

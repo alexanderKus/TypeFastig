@@ -22,6 +22,6 @@
       </div>
     </div>
     <button style="margin-top: 0" (click)="leaveRoom()">Leave Room</button>
-    <app-typing-board></app-typing-board>
+    <app-typing-board (stats)="updateStats($event)"></app-typing-board>
   </ng-container>
 </div>

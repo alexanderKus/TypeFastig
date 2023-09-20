@@ -1,29 +1,31 @@
 import {
+  AfterViewInit,
   Component,
   ElementRef,
+  EventEmitter,
   HostListener,
   OnDestroy,
+  Output,
   ViewChild,
 } from '@angular/core';
 import { Score } from 'src/app/core/models/score.model';
 import { TokenService } from 'src/app/core/services/token.service';
-import { Model } from 'src/app/features/models/model';
-import { ModelFactory } from '../model-factory/model-factory';
 import { UserService } from 'src/app/core/services/user.service';
+import { TextEditor } from '../textEditor';
+import { PlayerStatus } from 'src/app/features/models/playerStatus.model';
 
 @Component({
   selector: 'app-typing-board',
   templateUrl: './typing-board.component.html',
   styleUrls: ['./typing-board.component.scss'],
 })
-export class TypingBoardComponent implements OnDestroy {
+export class TypingBoardComponent implements AfterViewInit, OnDestroy {
+  baseTextEditor: TextEditor = TextEditor.createNewRandomText();
+  writtenTextEditor = new TextEditor('');
+  writtenText = '';
+
   isGameStarted: boolean = false;
   isEndDialogShown: boolean = false;
-
-  textModel: Model = ModelFactory.createModel();
-
-  writtenText: string = '';
-  writtenTextModel: Model | undefined;
 
   currentWordIndex: number = 0;
   interval: any;
@@ -34,38 +36,36 @@ export class TypingBoardComponent implements OnDestroy {
   bestSpeed: number = 0;
   accuracy: number = 0;
 
-  @ViewChild('dialog') dialog!: ElementRef<HTMLDialogElement>;
+  @Output('stats') stats = new EventEmitter<PlayerStatus>();
+
+  @ViewChild('startDialog') startDialog!: ElementRef<HTMLDialogElement>;
+  @ViewChild('endDialog') endDialog!: ElementRef<HTMLDialogElement>;
 
   @HostListener('document:keypress', ['$event'])
   handleKeyboardEvent(event: KeyboardEvent) {
-    if (this.isEndDialogShown) {
-      return;
-    }
     if (!this.isGameStarted) {
       this.init();
     }
-    let letter = this.textModel.getLetterFromIndex(this.currentWordIndex);
-    let isLetter = this.textModel.isLetterFromIndex(this.currentWordIndex);
-    if (event.key === ' ' && isLetter) {
-      this.writtenText += '.';
+    if (this.currentWordIndex > this.baseTextEditor.text.length) {
+      return;
     } else if (event.key === 'Enter') {
-      this.writtenText += '\n';
-    } else {
-      this.writtenText += event.key;
+      return;
     }
-    if (event.key !== letter) {
-      this.errorCount++;
-    }
-    this.writtenTextModel = new Model(this.writtenText);
+    this.writtenText += event.key;
     this.currentWordIndex++;
+    if (this.baseTextEditor.getCharAtIndex(this.currentWordIndex) === '\n') {
+      this.writtenText += '\n';
+      this.currentWordIndex++;
+    }
+    this.writtenTextEditor = new TextEditor(this.writtenText);
     this.accuracy = Math.abs(
       ((this.writtenText.length - this.errorCount) / this.writtenText.length) *
         100
     );
-    if (this.currentWordIndex == this.textModel.length) {
+    if (this.currentWordIndex == this.baseTextEditor.text.length) {
       this.isGameStarted = false;
       this.isEndDialogShown = true;
-      this.dialog.nativeElement.showModal();
+      this.endDialog.nativeElement.showModal();
       if (this.tokenService.isTokenValid) {
         const score: Score = {
           UserId: this.tokenService.userId!,
@@ -79,12 +79,24 @@ export class TypingBoardComponent implements OnDestroy {
 
   @HostListener('document:keydown.backspace', ['$event'])
   handleBackSpaceEvent(event: KeyboardEvent) {
-    if (this.isGameStarted && this.writtenText.length > 0) {
-      this.writtenText = this.writtenText.slice(0, this.writtenText.length - 1);
-      this.writtenTextModel = new Model(this.writtenText);
-    }
-    if (this.currentWordIndex > 0) {
-      this.currentWordIndex--;
+    if (this.writtenText.length > 0) {
+      if (
+        this.writtenTextEditor.getCharAtIndex(this.currentWordIndex - 1) ===
+        '\n'
+      ) {
+        this.currentWordIndex -= 2;
+        this.writtenText = this.writtenText.substring(
+          0,
+          this.writtenText.length - 2
+        );
+      } else {
+        this.writtenText = this.writtenText.substring(
+          0,
+          this.writtenText.length - 1
+        );
+        this.currentWordIndex--;
+      }
+      this.writtenTextEditor = new TextEditor(this.writtenText);
     }
   }
 
@@ -93,16 +105,46 @@ export class TypingBoardComponent implements OnDestroy {
     private tokenService: TokenService
   ) {}
 
+  ngAfterViewInit(): void {
+    this.openStartDialog();
+  }
+
   ngOnDestroy(): void {
     if (this.interval) {
       clearInterval(this.interval);
     }
   }
 
-  closeDialog(): void {
-    this.dialog.nativeElement.close();
+  closeStartDialog(): void {
+    this.startDialog.nativeElement.close();
+  }
+
+  closeEndDialog(): void {
+    this.endDialog.nativeElement.close();
     this.reset();
     this.isEndDialogShown = false;
+  }
+
+  getStyleClassForCurrentLetter(lineIndex: number, wordIndex: number): string {
+    let index = this.calculateCurrentIndex(lineIndex, wordIndex);
+    if (index === this.currentWordIndex) {
+      return 'current-letter';
+    }
+    return '';
+  }
+
+  getStyleClass(letter: string, lineIndex: number, wordIndex: number): string {
+    let index = this.calculateCurrentIndex(lineIndex, wordIndex);
+    const xEChar = this.baseTextEditor.getCharAtIndex(index);
+    const yEChar = this.writtenTextEditor.getCharAtIndex(index);
+    if (xEChar === yEChar) {
+      return 'correct-letter';
+    } else {
+      if (letter === ' ' || xEChar === ' ') {
+        return 'space';
+      }
+      return 'wrong-letter';
+    }
   }
 
   private init(): void {
@@ -110,7 +152,12 @@ export class TypingBoardComponent implements OnDestroy {
     this.startedAt = new Date().getTime();
     this.interval = setInterval(() => {
       this.calculateSpeed();
-    }, 100);
+      this.emitStats();
+    }, 1000);
+  }
+
+  private openStartDialog(): void {
+    this.startDialog.nativeElement.showModal();
   }
 
   private reset(): void {
@@ -118,8 +165,8 @@ export class TypingBoardComponent implements OnDestroy {
       clearInterval(this.interval);
     }
     this.writtenText = '';
-    this.writtenTextModel = ModelFactory.createEmptyModel();
-    this.textModel = ModelFactory.createModel();
+    this.writtenTextEditor = new TextEditor('');
+    this.baseTextEditor = TextEditor.createNewRandomText();
     this.errorCount = 0;
     this.currentWordIndex = 0;
     this.bestSpeed = 0;
@@ -137,44 +184,24 @@ export class TypingBoardComponent implements OnDestroy {
     }
   }
 
-  public getClass(
-    letter: string,
-    lineIndex: number,
-    wordIndex: number,
-    letterIndex: number
-  ): string {
-    if (!this.exists(lineIndex, wordIndex, letterIndex)) {
-      return 'neutral-letter';
-    }
-    if (this.isCorrect(letter, lineIndex, wordIndex, letterIndex)) {
-      return 'correct-letter';
-    } else {
-      return 'wrong-letter';
-    }
-  }
-
-  public exists(
-    lineIndex: number,
-    wordIndex: number,
-    letterIndex: number
-  ): boolean {
-    let letter =
-      this.writtenTextModel?.lines[lineIndex]?.line[wordIndex]?.letter[
-        letterIndex
-      ];
-    return letter !== undefined;
-  }
-
-  public isCorrect(
-    letter: string,
-    lineIndex: number,
-    wordIndex: number,
-    letterIndex: number
-  ): boolean {
-    return (
-      this.writtenTextModel?.lines[lineIndex]?.line[wordIndex]?.letter[
-        letterIndex
-      ] == letter
+  private emitStats(): void {
+    const progress = Math.round(
+      (this.writtenTextEditor.text.length / this.baseTextEditor.text.length) *
+        100
     );
+    const stats: PlayerStatus = {
+      name: this.userService.getUsername(),
+      progress: progress,
+    };
+    this.stats.emit(stats);
+  }
+
+  private calculateCurrentIndex(lineIndex: number, wordIndex: number): number {
+    let index = 0;
+    for (let i = 0; i < lineIndex; i++) {
+      index += this.baseTextEditor.lines[i].length + 1; // +1 because of '\n'
+    }
+    index += wordIndex;
+    return index;
   }
 }

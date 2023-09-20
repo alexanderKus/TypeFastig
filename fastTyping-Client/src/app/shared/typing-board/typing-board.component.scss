@@ -3,22 +3,32 @@
 .container > div {
   margin: 1rem;
 }
+
+pre {
+  padding: 0;
+  margin: 0;
+}
+
 .custom-line {
   margin: auto;
   border: 1px solid $font-color;
 }
 
-.line {
-  display: flex;
-  flex-direction: row;
+.text-wrapper {
+  position: relative;
 }
 
-.word {
-  display: flex;
-  flex-direction: row;
+.lines-wrapper {
+  position: absolute;
+  line-height: 1rem;
+  margin: 0;
+  padding: 0;
+  background-color: rgba(0, 0, 0, 0);
 }
 
-.letter {
+.space {
+  color: rgba(0, 0, 0, 0);
+  background-color: #ff4949;
 }
 
 .wrong-letter {
@@ -29,11 +39,27 @@
   color: #009d00;
 }
 
-.neutral-letter {
-  color: $font-color;
+.current-letter {
+  z-index: 1;
+  color: black;
+  background-color: $font-color;
+  transform: scale(0.8);
+  animation: pulse 1s infinite;
 }
 
-.current-letter {
-  color: yellow;
-  //transform: scale(1.2);
+@keyframes pulse {
+  0% {
+    transform: scale(0.75);
+    box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.7);
+  }
+
+  70% {
+    transform: scale(0.8);
+    box-shadow: 0 0 0 10px rgba(0, 0, 0, 0);
+  }
+
+  100% {
+    transform: scale(0.75);
+    box-shadow: 0 0 0 0 rgba(0, 0, 0, 0);
+  }
 }
