@@ -3,6 +3,9 @@ import { Observable } from 'rxjs';
 import { RoomService } from '../services/room.service';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { PlayerStatus } from '../models/playerStatus.model';
+import { TokenService } from 'src/app/core/services/token.service';
+import { RandomNicknameGenerator } from '../utils/radomNicknameGenerator';
+import { UserService } from 'src/app/core/services/user.service';
 
 @Component({
   selector: 'app-room',
@@ -12,43 +15,39 @@ import { PlayerStatus } from '../models/playerStatus.model';
 export class RoomComponent implements OnDestroy {
   isInRoom$: Observable<boolean> = this.roomService.isStarted$;
   stats$: Observable<PlayerStatus[]> = this.roomService.stats$;
-  private interval: any;
 
   constructor(
     private roomService: RoomService,
+    private userService: UserService,
     private spinner: NgxSpinnerService
   ) {}
 
   async ngOnDestroy(): Promise<void> {
-    if (this.interval) {
-      clearInterval(this.interval);
-    }
     if (this.isInRoom$) {
       await this.leaveRoom();
     }
   }
 
-  async endGame() {
+  async endGame(): Promise<void> {
     await this.leaveRoom();
   }
 
-  async joinRoom() {
+  async joinRoom(): Promise<void> {
     this.spinner.show();
     await this.roomService.joinRoom();
-    this.interval = setInterval(async () => {
-      const stats: PlayerStatus = {
-        name: '',
-        progress: 10,
-      };
-      await this.roomService.sendStats(stats);
-    }, 1000);
+    const stats: PlayerStatus = {
+      name: this.userService.getUsername(),
+      progress: 0,
+    };
+    await this.roomService.sendStats(stats);
     this.spinner.hide();
   }
 
-  async leaveRoom() {
-    if (this.interval) {
-      clearInterval(this.interval);
-    }
+  async leaveRoom(): Promise<void> {
     await this.roomService.leaveRoom();
+  }
+
+  async updateStats(stats: PlayerStatus): Promise<void> {
+    await this.roomService.sendStats(stats);
   }
 }

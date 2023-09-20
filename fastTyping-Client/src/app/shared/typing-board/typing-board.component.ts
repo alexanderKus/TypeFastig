@@ -1,39 +1,28 @@
 import {
+  AfterViewInit,
   Component,
   ElementRef,
+  EventEmitter,
   HostListener,
   OnDestroy,
+  Output,
   ViewChild,
 } from '@angular/core';
 import { Score } from 'src/app/core/models/score.model';
 import { TokenService } from 'src/app/core/services/token.service';
 import { UserService } from 'src/app/core/services/user.service';
 import { TextEditor } from '../textEditor';
+import { PlayerStatus } from 'src/app/features/models/playerStatus.model';
 
 @Component({
   selector: 'app-typing-board',
   templateUrl: './typing-board.component.html',
   styleUrls: ['./typing-board.component.scss'],
 })
-export class TypingBoardComponent implements OnDestroy {
-  x = `\
-static void *proc_keys_start(struct seq_file *p, loff_t *_pos)
-  __acquires(key_serial_lock)
-{
-  key_serial_t pos = *_pos;
-	struct key *key;
-  spin_lock(&key_serial_lock);
-  if (*_pos > INT_MAX)
-    return NULL;
-  key = find_ge_key(p, pos);
-  if (!key)
-    return NULL;
-  *_pos = key->serial;
-  return &key->serial_node;
-}`; // TODO: move this to factory
-  xE = new TextEditor(this.x);
-  y = '';
-  yE = new TextEditor(this.y);
+export class TypingBoardComponent implements AfterViewInit, OnDestroy {
+  baseTextEditor: TextEditor = TextEditor.createNewRandomText();
+  writtenTextEditor = new TextEditor('');
+  writtenText = '';
 
   isGameStarted: boolean = false;
   isEndDialogShown: boolean = false;
@@ -47,41 +36,36 @@ static void *proc_keys_start(struct seq_file *p, loff_t *_pos)
   bestSpeed: number = 0;
   accuracy: number = 0;
 
-  @ViewChild('dialog') dialog!: ElementRef<HTMLDialogElement>;
+  @Output('stats') stats = new EventEmitter<PlayerStatus>();
+
+  @ViewChild('startDialog') startDialog!: ElementRef<HTMLDialogElement>;
+  @ViewChild('endDialog') endDialog!: ElementRef<HTMLDialogElement>;
 
   @HostListener('document:keypress', ['$event'])
   handleKeyboardEvent(event: KeyboardEvent) {
     if (!this.isGameStarted) {
       this.init();
     }
-    if (this.currentWordIndex > this.xE.text.length) {
+    if (this.currentWordIndex > this.baseTextEditor.text.length) {
       return;
     } else if (event.key === 'Enter') {
       return;
     }
-    this.y += event.key;
+    this.writtenText += event.key;
     this.currentWordIndex++;
-    if (this.xE.getCharAtIndex(this.currentWordIndex) === '\n') {
-      this.y += '\n';
+    if (this.baseTextEditor.getCharAtIndex(this.currentWordIndex) === '\n') {
+      this.writtenText += '\n';
       this.currentWordIndex++;
     }
-    this.yE = new TextEditor(this.y);
-    console.clear();
-    console.log(
-      `${this.currentWordIndex}\n${this.yE.text}\n${this.yE.getCharAtIndex(
-        this.currentWordIndex - 1
-      )}\n${this.xE.text.substring(
-        0,
-        this.currentWordIndex
-      )}\n${this.xE.getCharAtIndex(this.currentWordIndex - 1)}`
-    );
+    this.writtenTextEditor = new TextEditor(this.writtenText);
     this.accuracy = Math.abs(
-      ((this.y.length - this.errorCount) / this.y.length) * 100
+      ((this.writtenText.length - this.errorCount) / this.writtenText.length) *
+        100
     );
-    if (this.currentWordIndex == this.xE.text.length) {
+    if (this.currentWordIndex == this.baseTextEditor.text.length) {
       this.isGameStarted = false;
       this.isEndDialogShown = true;
-      this.dialog.nativeElement.showModal();
+      this.endDialog.nativeElement.showModal();
       if (this.tokenService.isTokenValid) {
         const score: Score = {
           UserId: this.tokenService.userId!,
@@ -95,15 +79,24 @@ static void *proc_keys_start(struct seq_file *p, loff_t *_pos)
 
   @HostListener('document:keydown.backspace', ['$event'])
   handleBackSpaceEvent(event: KeyboardEvent) {
-    if (this.y.length > 0) {
-      if (this.yE.getCharAtIndex(this.currentWordIndex - 1) === '\n') {
+    if (this.writtenText.length > 0) {
+      if (
+        this.writtenTextEditor.getCharAtIndex(this.currentWordIndex - 1) ===
+        '\n'
+      ) {
         this.currentWordIndex -= 2;
-        this.y = this.y.substring(0, this.y.length - 2);
+        this.writtenText = this.writtenText.substring(
+          0,
+          this.writtenText.length - 2
+        );
       } else {
-        this.y = this.y.substring(0, this.y.length - 1);
+        this.writtenText = this.writtenText.substring(
+          0,
+          this.writtenText.length - 1
+        );
         this.currentWordIndex--;
       }
-      this.yE = new TextEditor(this.y);
+      this.writtenTextEditor = new TextEditor(this.writtenText);
     }
   }
 
@@ -112,20 +105,28 @@ static void *proc_keys_start(struct seq_file *p, loff_t *_pos)
     private tokenService: TokenService
   ) {}
 
+  ngAfterViewInit(): void {
+    this.openStartDialog();
+  }
+
   ngOnDestroy(): void {
     if (this.interval) {
       clearInterval(this.interval);
     }
   }
 
-  closeDialog(): void {
-    this.dialog.nativeElement.close();
+  closeStartDialog(): void {
+    this.startDialog.nativeElement.close();
+  }
+
+  closeEndDialog(): void {
+    this.endDialog.nativeElement.close();
     this.reset();
     this.isEndDialogShown = false;
   }
 
   getStyleClassForCurrentLetter(lineIndex: number, wordIndex: number): string {
-    let index = this.calculateCorrentIndex(lineIndex, wordIndex);
+    let index = this.calculateCurrentIndex(lineIndex, wordIndex);
     if (index === this.currentWordIndex) {
       return 'current-letter';
     }
@@ -133,9 +134,9 @@ static void *proc_keys_start(struct seq_file *p, loff_t *_pos)
   }
 
   getStyleClass(letter: string, lineIndex: number, wordIndex: number): string {
-    let index = this.calculateCorrentIndex(lineIndex, wordIndex);
-    const xEChar = this.xE.getCharAtIndex(index);
-    const yEChar = this.yE.getCharAtIndex(index);
+    let index = this.calculateCurrentIndex(lineIndex, wordIndex);
+    const xEChar = this.baseTextEditor.getCharAtIndex(index);
+    const yEChar = this.writtenTextEditor.getCharAtIndex(index);
     if (xEChar === yEChar) {
       return 'correct-letter';
     } else {
@@ -151,16 +152,21 @@ static void *proc_keys_start(struct seq_file *p, loff_t *_pos)
     this.startedAt = new Date().getTime();
     this.interval = setInterval(() => {
       this.calculateSpeed();
-    }, 100);
+      this.emitStats();
+    }, 1000);
+  }
+
+  private openStartDialog(): void {
+    this.startDialog.nativeElement.showModal();
   }
 
   private reset(): void {
     if (this.interval) {
       clearInterval(this.interval);
     }
-    // TODO: gerenate new xE
-    this.y = '';
-    this.yE = new TextEditor('');
+    this.writtenText = '';
+    this.writtenTextEditor = new TextEditor('');
+    this.baseTextEditor = TextEditor.createNewRandomText();
     this.errorCount = 0;
     this.currentWordIndex = 0;
     this.bestSpeed = 0;
@@ -178,10 +184,22 @@ static void *proc_keys_start(struct seq_file *p, loff_t *_pos)
     }
   }
 
-  private calculateCorrentIndex(lineIndex: number, wordIndex: number): number {
+  private emitStats(): void {
+    const progress = Math.round(
+      (this.writtenTextEditor.text.length / this.baseTextEditor.text.length) *
+        100
+    );
+    const stats: PlayerStatus = {
+      name: this.userService.getUsername(),
+      progress: progress,
+    };
+    this.stats.emit(stats);
+  }
+
+  private calculateCurrentIndex(lineIndex: number, wordIndex: number): number {
     let index = 0;
     for (let i = 0; i < lineIndex; i++) {
-      index += this.xE.lines[i].length + 1; // +1 because of '\n'
+      index += this.baseTextEditor.lines[i].length + 1; // +1 because of '\n'
     }
     index += wordIndex;
     return index;

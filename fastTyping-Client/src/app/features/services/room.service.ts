@@ -4,19 +4,21 @@ import { environment } from 'src/environments/environment';
 import { HubConnection, HubConnectionBuilder } from '@microsoft/signalr';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { PlayerStatus } from '../models/playerStatus.model';
+import { UserService } from 'src/app/core/services/user.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class RoomService {
-  // Maybe observable is not needed.
-  // TODO: give it correct type
   public stats$ = new BehaviorSubject<PlayerStatus[]>([]);
-  public isStarted$ = new BehaviorSubject<boolean>(false); // TODO: add $ at the end
+  public isStarted$ = new BehaviorSubject<boolean>(false);
   private roomId: number | undefined = undefined;
   private hubConnection = this.createHubConnection();
 
-  constructor(private spinner: NgxSpinnerService) {}
+  constructor(
+    private spinner: NgxSpinnerService,
+    private userService: UserService
+  ) {}
 
   createHubConnection(): HubConnection {
     this.spinner.show();
@@ -47,8 +49,8 @@ export class RoomService {
   }
 
   public async joinRoom(): Promise<void> {
-    // TODO: send correct username is logged in if not figure it out
-    await this.hubConnection.invoke('JoinRoom', 'player1');
+    const nickname = this.userService.getUsername();
+    await this.hubConnection.invoke('JoinRoom', nickname);
   }
 
   public async leaveRoom(): Promise<void> {

@@ -4,24 +4,28 @@
   <div class="custom-line"></div>
   <div class="text-wrapper">
     <div class="lines-wrapper">
-      <pre *ngFor="let line of xE.lines; let i = index">
+      <pre *ngFor="let line of baseTextEditor.lines; let i = index">
       <span *ngFor="let char of line.split(''); let j = index"
           [ngClass]="getStyleClassForCurrentLetter(i,j)">{{ char }}</span>
       </pre>
     </div>
     <div class="lines-wrapper">
       <pre
-        *ngFor="let line of yE.lines; let i = index"
+        *ngFor="let line of writtenTextEditor.lines; let i = index"
         style="width: fit-content"
       >
       <span *ngFor="let char of line.split(''); let j = index"
           [ngClass]="getStyleClass(char, i, j)">{{ char }}</span>
       </pre>
     </div>
-    <dialog #dialog>
+    <dialog #startDialog>
+      Check out your typing speed at coding! Start by typing!
+      <button type="button" (click)="closeStartDialog()">X</button>
+    </dialog>
+    <dialog #endDialog>
       Summary: WPM: {{ bestSpeed }}, Accuracy: {{ accuracy }}%, Errors:
       {{ errorCount }}
-      <button type="button" (click)="closeDialog()">X</button>
+      <button type="button" (click)="closeEndDialog()">X</button>
     </dialog>
   </div>
 </div>

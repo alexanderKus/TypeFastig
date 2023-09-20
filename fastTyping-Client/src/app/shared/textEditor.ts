@@ -1,3 +1,5 @@
+import { texts } from './code-texts/codeTexts';
+
 export class TextEditor {
   public text: string = '';
 
@@ -21,5 +23,10 @@ export class TextEditor {
     } else {
       return this.text[index];
     }
+  }
+
+  public static createNewRandomText(): TextEditor {
+    let randomIndex = Math.floor(Math.random() * texts.size);
+    return new TextEditor(texts.get(randomIndex)!);
   }
 }
