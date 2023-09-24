@@ -3,8 +3,6 @@ import { Observable } from 'rxjs';
 import { RoomService } from '../services/room.service';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { PlayerStatus } from '../models/playerStatus.model';
-import { TokenService } from 'src/app/core/services/token.service';
-import { RandomNicknameGenerator } from '../utils/radomNicknameGenerator';
 import { UserService } from 'src/app/core/services/user.service';
 
 @Component({
