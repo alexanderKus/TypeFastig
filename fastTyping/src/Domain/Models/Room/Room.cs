@@ -1,4 +1,4 @@
-﻿using System;
+﻿using Domain.Models.Enums;
 namespace Domain.Models.Room;
 
 public class Room
@@ -11,6 +11,14 @@ public class Room
     public bool IsFull => _players.Count == _roomSize;
     public bool IsEmpty => _players.Count == 0;
     public bool IsStarted { get; set; }
+    public Language Language { get; init; }
+
+    public Room()
+    {
+        Random r = new();
+        var max = Enum.GetValues(typeof(Language)).Cast<int>().Max() + 1; 
+        Language = (Language)r.NextInt64(0, max);
+    }
 
     public void AddPlayer(Player player)
     {

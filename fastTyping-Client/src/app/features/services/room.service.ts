@@ -5,6 +5,7 @@ import { HubConnection, HubConnectionBuilder } from '@microsoft/signalr';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { PlayerStatus } from '../models/playerStatus.model';
 import { UserService } from 'src/app/core/services/user.service';
+import { Language } from '../models/language.enum';
 
 @Injectable({
   providedIn: 'root',
@@ -12,6 +13,7 @@ import { UserService } from 'src/app/core/services/user.service';
 export class RoomService {
   public stats$ = new BehaviorSubject<PlayerStatus[]>([]);
   public isStarted$ = new BehaviorSubject<boolean>(false);
+  public roomLanguage$ = new BehaviorSubject<Language | undefined>(undefined);
   private roomId: number | undefined = undefined;
   private hubConnection = this.createHubConnection();
 
@@ -30,9 +32,12 @@ export class RoomService {
     hubConnection.start().catch((err) => console.log(err));
 
     hubConnection.on('SetRoomId', (roomId) => {
-      // ONly for testing
       this.isStarted$.next(true);
       this.roomId = roomId;
+    });
+
+    hubConnection.on('SetLanguage', (lang) => {
+      this.roomLanguage$.next(lang);
     });
 
     hubConnection.on('UpdateStats', (stats) => {
@@ -56,8 +61,8 @@ export class RoomService {
   public async leaveRoom(): Promise<void> {
     if (this.roomId != undefined) {
       await this.hubConnection.invoke('LeaveRoom', this.roomId);
-      this.hubConnection.stop();
       this.isStarted$.next(false);
+      this.roomLanguage$.next(undefined);
       this.roomId = undefined;
     }
   }

@@ -49,6 +49,11 @@ public class RoomService : IRoomService
             var room = _rooms.FirstOrDefault(
                 x => x.ContainsPlayerWithConnectionId(userConnectionId));
             room?.RemovePlayerByConnectionId(userConnectionId);
+            if (room is not null && room.IsEmpty)
+            {
+                _rooms.Remove(room);
+                return null;
+            }
             return room;
         }
     }

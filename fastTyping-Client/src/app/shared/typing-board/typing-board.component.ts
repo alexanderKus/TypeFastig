@@ -4,6 +4,7 @@ import {
   ElementRef,
   EventEmitter,
   HostListener,
+  Input,
   OnDestroy,
   Output,
   ViewChild,
@@ -11,8 +12,9 @@ import {
 import { Score } from 'src/app/core/models/score.model';
 import { TokenService } from 'src/app/core/services/token.service';
 import { UserService } from 'src/app/core/services/user.service';
-import { TextEditor } from '../textEditor';
 import { PlayerStatus } from 'src/app/features/models/playerStatus.model';
+import { TextEditor } from '../textEditor';
+import { RoomService } from 'src/app/features/services/room.service';
 
 @Component({
   selector: 'app-typing-board',
@@ -20,7 +22,9 @@ import { PlayerStatus } from 'src/app/features/models/playerStatus.model';
   styleUrls: ['./typing-board.component.scss'],
 })
 export class TypingBoardComponent implements AfterViewInit, OnDestroy {
-  baseTextEditor: TextEditor = TextEditor.createNewRandomText();
+  baseTextEditor: TextEditor = TextEditor.createNewRandomText(
+    this.roomService.roomLanguage$.getValue()
+  );
   writtenTextEditor = new TextEditor('');
   writtenText = '';
 
@@ -102,7 +106,8 @@ export class TypingBoardComponent implements AfterViewInit, OnDestroy {
 
   constructor(
     private userService: UserService,
-    private tokenService: TokenService
+    private tokenService: TokenService,
+    private roomService: RoomService
   ) {}
 
   ngAfterViewInit(): void {
@@ -113,6 +118,7 @@ export class TypingBoardComponent implements AfterViewInit, OnDestroy {
     if (this.interval) {
       clearInterval(this.interval);
     }
+    this.roomService.leaveRoom();
   }
 
   closeStartDialog(): void {
@@ -166,7 +172,9 @@ export class TypingBoardComponent implements AfterViewInit, OnDestroy {
     }
     this.writtenText = '';
     this.writtenTextEditor = new TextEditor('');
-    this.baseTextEditor = TextEditor.createNewRandomText();
+    this.baseTextEditor = TextEditor.createNewRandomText(
+      this.roomService.roomLanguage$.getValue()
+    );
     this.errorCount = 0;
     this.currentWordIndex = 0;
     this.bestSpeed = 0;

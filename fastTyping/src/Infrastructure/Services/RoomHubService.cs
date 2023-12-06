@@ -28,24 +28,24 @@ public class RoomHubService : IRoomHubService
             Progress = 0
         };
         var room = _roomService.JoinRoom(player);
-        var gourpName = room.Id.ToString();
+        var groupName = room.Id.ToString();
         var stats = _roomService.GetStats(room.Id);
-        await _hub.Groups.AddToGroupAsync(connectionId, gourpName);
+        await _hub.Groups.AddToGroupAsync(connectionId, groupName);
         await _hub.Clients.Client(connectionId).SendAsync("SetRoomId", room.Id);
-        await _hub.Clients.Group(gourpName).SendAsync("UpdateStats", stats);
+        await _hub.Clients.Client(connectionId).SendAsync("SetLanguage", room.Language);
+        await _hub.Clients.Group(groupName).SendAsync("UpdateStats", stats);
         if (room.IsFull)
         {
-            await _hub.Clients.Group(gourpName).SendAsync("StartRoom", true);
+            await _hub.Clients.Group(groupName).SendAsync("StartRoom", true);
         }
     }
 
     public async Task LeaveRoom(Guid roomId, string connectionId)
     {
-        var gourpName = roomId.ToString();
-        // FIXME: fix this bug
-        //        _roomService.LeaveRoom(connectionId);
+        var groupName = roomId.ToString();
+        _roomService.LeaveRoom(connectionId);
         var stats = _roomService.GetStats(roomId);
-        await _hub.Clients.Group(gourpName).SendAsync("UpdateStats", stats);
+        await _hub.Clients.Group(groupName).SendAsync("UpdateStats", stats);
     }
 
     public async Task SendStats(Guid roomId, PlayerDto player, string connectionId)

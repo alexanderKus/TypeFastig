@@ -4,6 +4,7 @@ import { RoomService } from '../services/room.service';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { PlayerStatus } from '../models/playerStatus.model';
 import { UserService } from 'src/app/core/services/user.service';
+import { Language } from '../models/language.enum';
 
 @Component({
   selector: 'app-room',
@@ -19,6 +20,10 @@ export class RoomComponent implements OnDestroy {
     private userService: UserService,
     private spinner: NgxSpinnerService
   ) {}
+
+  getLanguage(): Language | undefined {
+    return this.roomService.roomLanguage$.getValue();
+  }
 
   async ngOnDestroy(): Promise<void> {
     if (this.isInRoom$) {

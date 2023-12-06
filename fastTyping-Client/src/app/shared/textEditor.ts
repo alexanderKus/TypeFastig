@@ -1,4 +1,5 @@
-import { texts } from './code-texts/codeTexts';
+import { Language } from '../features/models/language.enum';
+import { CodeTexts } from '../shared/code-texts/codeTexts';
 
 export class TextEditor {
   public text: string = '';
@@ -25,8 +26,14 @@ export class TextEditor {
     }
   }
 
-  public static createNewRandomText(): TextEditor {
-    let randomIndex = Math.floor(Math.random() * texts.size);
-    return new TextEditor(texts.get(randomIndex)!);
+  public static createNewRandomText(lang: Language | undefined): TextEditor {
+    if (lang === undefined) {
+      if (Math.random() < 0.5) {
+        lang = Language.C;
+      } else {
+        lang = Language.PYTHON;
+      }
+    }
+    return new TextEditor(CodeTexts.getText(lang));
   }
 }

@@ -1,12 +1,15 @@
-export const texts = new Map<number, string>([
-  [
-    0,
-    `\
+import { Language } from 'src/app/features/models/language.enum';
+
+export class CodeTexts {
+  public static getText(lang: Language): string {
+    switch (lang) {
+      case Language.C:
+        return `\
 static void *proc_keys_start(struct seq_file *p, loff_t *_pos)
   __acquires(key_serial_lock)
 {
   key_serial_t pos = *_pos;
-	struct key *key;
+  struct key *key;
   spin_lock(&key_serial_lock);
   if (*_pos > INT_MAX)
     return NULL;
@@ -15,11 +18,9 @@ static void *proc_keys_start(struct seq_file *p, loff_t *_pos)
     return NULL;
   *_pos = key->serial;
   return &key->serial_node;
-}`,
-  ],
-  [
-    1,
-    `\
+}`;
+      case Language.PYTHON:
+        return `\
 class AdagradOptimizer(optimizer.Optimizer):
   def __init__(self, learning_rate, initial_accumulator_value=0.1,
     use_locking=False, name="Adagrad"):
@@ -30,6 +31,9 @@ class AdagradOptimizer(optimizer.Optimizer):
   self._learning_rate = learning_rate
   self._initial_accumulator_value = initial_accumulator_value
   self._learning_rate_tensor = None
-`,
-  ],
-]);
+`;
+      default:
+        return '';
+    }
+  }
+}
