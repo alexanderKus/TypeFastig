@@ -6,6 +6,7 @@ import { Subscription } from 'rxjs';
 import { Score } from 'src/app/core/models/score.model';
 import { TokenService } from 'src/app/core/services/token.service';
 import { UserService } from 'src/app/core/services/user.service';
+import { Language } from '../models/language.enum';
 
 @Component({
   selector: 'app-profile',
@@ -13,16 +14,19 @@ import { UserService } from 'src/app/core/services/user.service';
   styleUrls: ['./profile.component.scss'],
 })
 export class ProfileComponent implements OnInit, OnDestroy {
+  lang = Language.C;
   username: string = '';
   bestSpeedScore: Score = {
     UserId: 0,
     Speed: 0,
     Accuracy: 0,
+    Language: Language.C,
   };
   bestAccuracyScore: Score = {
     UserId: 0,
     Speed: 0,
     Accuracy: 0,
+    Language: Language.C,
   };
   history: Score[] = [];
   columns: string[] = ['position', 'Accuracy', 'Speed'];
@@ -50,14 +54,18 @@ export class ProfileComponent implements OnInit, OnDestroy {
     let userId: number | undefined = this.tokenService.userId;
     if (userId) {
       this.subscriptions.push(
-        this.userService.getUserBestSpeedScore(userId).subscribe((score) => {
-          this.bestSpeedScore = score;
-        })
+        this.userService
+          .getUserBestSpeedScore(userId, this.lang)
+          .subscribe((score) => {
+            this.bestSpeedScore = score;
+          })
       );
       this.subscriptions.push(
-        this.userService.getUserBestAccuracyScore(userId).subscribe((score) => {
-          this.bestAccuracyScore = score;
-        })
+        this.userService
+          .getUserBestAccuracyScore(userId, this.lang)
+          .subscribe((score) => {
+            this.bestAccuracyScore = score;
+          })
       );
       this.subscriptions.push(
         this.userService.getScoreHistory(userId).subscribe((scores) => {

@@ -1,3 +1,5 @@
-﻿namespace Domain.Models;
+﻿using Domain.Models.Enums;
 
-public record ScoreRequest(int UserId, float Accuracy, int Speed);
+namespace Domain.Models;
+
+public record ScoreRequest(int UserId, float Accuracy, int Speed, Language Language);

@@ -6,6 +6,7 @@ using Application.Scores.Queries;
 using AutoMapper;
 using Domain.Models;
 using Domain.Models.Dtos;
+using Domain.Models.Enums;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -46,9 +47,9 @@ public class ScoreController : ApiController
     }
 
     [HttpGet("GetBestSpeedScore/{userid}")]
-    public async Task<IActionResult> GetBestSpeedScore(int userId)
+    public async Task<IActionResult> GetBestSpeedScore(int userId, [FromQuery]Language lang)
     {
-        UserBestSpeedScore userBestSpeedScoreQuery = new(userId);
+        UserBestSpeedScore userBestSpeedScoreQuery = new(userId, lang);
         OneOf<ScoreDto?, ScoreError> result =
             await _mediator.Send(userBestSpeedScoreQuery);
         return result.Match(
@@ -58,9 +59,9 @@ public class ScoreController : ApiController
     }
 
     [HttpGet("GetBestAccuracyScore/{userid}")]
-    public async Task<IActionResult> GetBestAccuracyScore(int userId)
+    public async Task<IActionResult> GetBestAccuracyScore(int userId, [FromQuery]Language lang)
     {
-        UserBestAccuracyScore userBestAccuracyScoreQuery = new(userId);
+        UserBestAccuracyScore userBestAccuracyScoreQuery = new(userId, lang);
         OneOf<ScoreDto?, ScoreError> result =
             await _mediator.Send(userBestAccuracyScoreQuery);
         return result.Match(

@@ -3,6 +3,7 @@ import { CodeTexts } from '../shared/code-texts/codeTexts';
 
 export class TextEditor {
   public text: string = '';
+  public Language?: Language;
 
   constructor(text: string) {
     this.text = text;
@@ -34,6 +35,8 @@ export class TextEditor {
         lang = Language.PYTHON;
       }
     }
-    return new TextEditor(CodeTexts.getText(lang));
+    let te = new TextEditor(CodeTexts.getText(lang));
+    te.Language = lang;
+    return te;
   }
 }

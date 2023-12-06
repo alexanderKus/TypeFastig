@@ -5,6 +5,7 @@ import { BehaviorSubject, Observable, map } from 'rxjs';
 import { TokenService } from './token.service';
 import { Score } from '../models/score.model';
 import { RandomNicknameGenerator } from 'src/app/features/utils/radomNicknameGenerator';
+import { Language } from 'src/app/features/models/language.enum';
 
 @Injectable({
   providedIn: 'root',
@@ -23,15 +24,15 @@ export class UserService {
     return this.nickname;
   }
 
-  getUserBestSpeedScore(userId: number): Observable<Score> {
+  getUserBestSpeedScore(userId: number, lang: Language): Observable<Score> {
     return this.http.get<Score>(
-      `${environment.apiUrl}/score/getBestSpeedScore/${userId}`
+      `${environment.apiUrl}/score/getBestSpeedScore/${userId}?lang=${lang}`
     );
   }
 
-  getUserBestAccuracyScore(userId: number): Observable<Score> {
+  getUserBestAccuracyScore(userId: number, lang: Language): Observable<Score> {
     return this.http.get<Score>(
-      `${environment.apiUrl}/score/getBestAccuracyScore/${userId}`
+      `${environment.apiUrl}/score/getBestAccuracyScore/${userId}?lang=${lang}`
     );
   }
 

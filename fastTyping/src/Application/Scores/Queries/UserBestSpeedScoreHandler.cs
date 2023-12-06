@@ -27,7 +27,7 @@ public class UserBestSpeedScoreHandler :
             return ScoreError.DoNotExists; // TODO: or userError.DoNotExists
         }
         ScoreDto? highestSpeedScore =
-            await _unitOfWork.ScoreRepository.GetUserBestSpeedScoreAsync(request.UserId);
+            await _unitOfWork.ScoreRepository.GetUserBestSpeedScoreAsync(request.UserId, request.Language);
         return highestSpeedScore;
     }
 }

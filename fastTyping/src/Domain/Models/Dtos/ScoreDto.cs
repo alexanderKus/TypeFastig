@@ -1,3 +1,5 @@
-﻿namespace Domain.Models.Dtos;
+﻿using Domain.Models.Enums;
 
-public record ScoreDto(int Id, float Accuracy, int Speed);
+namespace Domain.Models.Dtos;
+
+public record ScoreDto(int Id, float Accuracy, int Speed, Language Language);

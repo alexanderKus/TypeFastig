@@ -1,6 +1,7 @@
 ﻿using Application.Interfaces.Repositories;
 using Domain.Models.Dtos;
 using Domain.Models.Entities;
+using Domain.Models.Enums;
 using Infrastructure.Database;
 using Microsoft.EntityFrameworkCore;
 
@@ -31,7 +32,8 @@ public class ScoreRepository : IScoreRepository
             .Select(x => new ScoreDto(
                 x.Id,
                 x.Accuracy,
-                x.Speed
+                x.Speed,
+                x.Language
             ))
             .ToListAsync();
     }
@@ -39,7 +41,7 @@ public class ScoreRepository : IScoreRepository
     // TODO: Try to use AsyncEnumerable
     public Task<List<ScoreInfoDto>> GetTop100ScoresByAccuracyAsnyc()
     {
-        return _context.Scores
+        return  _context.Scores
             .AsNoTracking()
             .OrderByDescending(x => x.Accuracy)
             .Take(100)
@@ -47,7 +49,8 @@ public class ScoreRepository : IScoreRepository
             .Select(x => new ScoreInfoDto(
                 x.User.Username,
                 x.Accuracy,
-                x.Speed
+                x.Speed,
+                x.Language
                 ))
             .ToListAsync();
     }
@@ -63,37 +66,40 @@ public class ScoreRepository : IScoreRepository
             .Select(x => new ScoreInfoDto(
                 x.User.Username,
                 x.Accuracy,
-                x.Speed
+                x.Speed,
+                x.Language
                 ))
             .ToListAsync();
     }
 
-    public Task<ScoreDto?> GetUserBestAccuracyScoreAsync(int userId)
+    public Task<ScoreDto?> GetUserBestAccuracyScoreAsync(int userId, Language Language)
     {
         return _context.Scores
             .AsNoTracking()
-            .Where(x => x.UserId == userId)
+            .Where(x => x.UserId == userId && x.Language == Language)
             .OrderByDescending(x => x.Accuracy)
             .Take(1)
             .Select(x => new ScoreDto(
                 x.Id,
                 x.Accuracy,
-                x.Speed
+                x.Speed,
+                x.Language
                 ))
             .FirstOrDefaultAsync();
     }
 
-    public Task<ScoreDto?> GetUserBestSpeedScoreAsync(int userId)
+    public Task<ScoreDto?> GetUserBestSpeedScoreAsync(int userId, Language Language)
     {
         return _context.Scores
             .AsNoTracking()
-            .Where(x => x.UserId == userId)
+            .Where(x => x.UserId == userId && x.Language == Language)
             .OrderByDescending(x => x.Speed)
             .Take(1)
             .Select(x => new ScoreDto(
                 x.Id,
                 x.Accuracy,
-                x.Speed
+                x.Speed,
+                x.Language
                 ))
             .FirstOrDefaultAsync();
     }

@@ -75,6 +75,7 @@ export class TypingBoardComponent implements AfterViewInit, OnDestroy {
           UserId: this.tokenService.userId!,
           Speed: this.bestSpeed,
           Accuracy: this.accuracy,
+          Language: this.baseTextEditor.Language!,
         };
         this.userService.addScore(score).subscribe();
       }

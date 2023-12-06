@@ -27,7 +27,7 @@ public class UserBestAccuracyScoreHandler
             return ScoreError.DoNotExists; // TODO: UserError.DoNotExists ???
         }
         ScoreDto? highestAccuracyScore =
-            await _unitOfWork.ScoreRepository.GetUserBestAccuracyScoreAsync(request.UserId);
+            await _unitOfWork.ScoreRepository.GetUserBestAccuracyScoreAsync(request.UserId, request.Language);
         return highestAccuracyScore;
     }
 }

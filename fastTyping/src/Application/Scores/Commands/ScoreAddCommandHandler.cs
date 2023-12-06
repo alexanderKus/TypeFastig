@@ -21,7 +21,8 @@ public class ScoreAddCommandHandler
             Id = 0,
             UserId = request.UserId,
             Accuracy = request.Accuracy,
-            Speed = request.Speed
+            Speed = request.Speed,
+            Language = request.Language
         };
         await _unitOfWork.ScoreRepository.AddScoreAsnyc(score);
         return Unit.Value;
