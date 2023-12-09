@@ -21,13 +21,13 @@ export class ProfileComponent implements OnInit, OnDestroy {
     { value: Language.PYTHON, viewValue: Language[Language.PYTHON] },
   ];
   username: string = '';
-  bestSpeedScore: Score = {
+  bestSpeedScore: undefined | Score = {
     UserId: 0,
     Speed: 0,
     Accuracy: 0,
     Language: Language.C,
   };
-  bestAccuracyScore: Score = {
+  bestAccuracyScore: undefined | Score = {
     UserId: 0,
     Speed: 0,
     Accuracy: 0,
