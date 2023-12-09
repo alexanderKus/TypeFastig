@@ -25,6 +25,6 @@ public class UserScoresQueryHandler
         {
             return ScoreError.DoNotExists; // TODO: propabily UserError.DoNotExists...
         }
-        return await _unitOfWork.ScoreRepository.GetScoresForUserAsync(request.UserId);
+        return await _unitOfWork.ScoreRepository.GetScoresForUserAsync(request.UserId, request.Language);
     }
 }

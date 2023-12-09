@@ -22,11 +22,11 @@ public class ScoreRepository : IScoreRepository
         await _context.SaveChangesAsync();
     }
 
-    public Task<List<ScoreDto>> GetScoresForUserAsync(int userId)
+    public Task<List<ScoreDto>> GetScoresForUserAsync(int userId, Language language)
     {
         return _context.Scores
             .AsNoTracking()
-            .Where(x => x.UserId == userId)
+            .Where(x => x.UserId == userId && x.Language == language)
             .OrderByDescending(x => x.Id)
             .Take(100)
             .Select(x => new ScoreDto(

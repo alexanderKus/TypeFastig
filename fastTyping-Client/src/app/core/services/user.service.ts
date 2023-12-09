@@ -36,9 +36,9 @@ export class UserService {
     );
   }
 
-  getScoreHistory(userId: number): Observable<Score[]> {
+  getScoreHistory(userId: number, lang: Language): Observable<Score[]> {
     return this.http.get<Score[]>(
-      `${environment.apiUrl}/score/getScoreForUser/${userId}`
+      `${environment.apiUrl}/score/getScoreForUser/${userId}?lang=${lang}`
     );
   }
 

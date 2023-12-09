@@ -14,7 +14,12 @@ import { Language } from '../models/language.enum';
   styleUrls: ['./profile.component.scss'],
 })
 export class ProfileComponent implements OnInit, OnDestroy {
+  langName = Language;
   lang = Language.C;
+  langOpt = [
+    { value: Language.C, viewValue: Language[Language.C] },
+    { value: Language.PYTHON, viewValue: Language[Language.PYTHON] },
+  ];
   username: string = '';
   bestSpeedScore: Score = {
     UserId: 0,
@@ -29,7 +34,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
     Language: Language.C,
   };
   history: Score[] = [];
-  columns: string[] = ['position', 'Accuracy', 'Speed'];
+  columns: string[] = ['position', 'Accuracy', 'Speed', 'Language'];
   plot: any;
   subscriptions: Subscription[] = [];
 
@@ -50,9 +55,18 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.spinner.show();
+    this.getScores();
+  }
+
+  changeScore(): void {
+    this.getScores();
+  }
+
+  private getScores(): void {
     this.username = this.tokenService.username;
     let userId: number | undefined = this.tokenService.userId;
     if (userId) {
+      this.subscriptions.forEach((sub) => sub.unsubscribe());
       this.subscriptions.push(
         this.userService
           .getUserBestSpeedScore(userId, this.lang)
@@ -68,12 +82,15 @@ export class ProfileComponent implements OnInit, OnDestroy {
           })
       );
       this.subscriptions.push(
-        this.userService.getScoreHistory(userId).subscribe((scores) => {
-          this.history = scores;
-          this.fixPosition();
-          this.createPlot();
-          this.spinner.hide();
-        })
+        this.userService
+          .getScoreHistory(userId, this.lang)
+          .subscribe((scores) => {
+            this.history = scores;
+            this.destroyPlot();
+            this.fixPosition();
+            this.createPlot();
+            this.spinner.hide();
+          })
       );
     }
   }
@@ -117,5 +134,8 @@ export class ProfileComponent implements OnInit, OnDestroy {
         },
       });
     }
+  }
+  private destroyPlot(): void {
+    if (this.plot) this.plot.destroy();
   }
 }

@@ -35,9 +35,9 @@ public class ScoreController : ApiController
     }
     
     [HttpGet("GetScoreForUser/{userId}")]
-    public async Task<IActionResult> GetScoreForUser(int userId)
+    public async Task<IActionResult> GetScoreForUser(int userId, [FromQuery]Language lang)
     {
-        UserScoresQuery userScoresQuery = new(userId);
+        UserScoresQuery userScoresQuery = new(userId, lang);
         OneOf<List<ScoreDto>, ScoreError> result =
             await _mediator.Send(userScoresQuery);
         return result.Match(
@@ -46,7 +46,7 @@ public class ScoreController : ApiController
                 detail: result.Value.ToString(), statusCode: (int)HttpStatusCode.NotFound));
     }
 
-    [HttpGet("GetBestSpeedScore/{userid}")]
+    [HttpGet("GetBestSpeedScore/{userId}")]
     public async Task<IActionResult> GetBestSpeedScore(int userId, [FromQuery]Language lang)
     {
         UserBestSpeedScore userBestSpeedScoreQuery = new(userId, lang);
