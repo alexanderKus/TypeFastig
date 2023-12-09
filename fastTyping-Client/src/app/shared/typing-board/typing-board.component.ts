@@ -55,6 +55,11 @@ export class TypingBoardComponent implements AfterViewInit, OnDestroy {
     } else if (event.key === 'Enter') {
       return;
     }
+    if (
+      event.key !== this.baseTextEditor.getCharAtIndex(this.currentWordIndex)
+    ) {
+      this.errorCount++;
+    }
     this.writtenText += event.key;
     this.currentWordIndex++;
     if (this.baseTextEditor.getCharAtIndex(this.currentWordIndex) === '\n') {
