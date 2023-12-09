@@ -5,6 +5,8 @@ using Infrastructure.SignalR;
 
 var MyAllowSpecificOrigins = "_allowAllOrigins";
 var builder = WebApplication.CreateBuilder(args);
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole();
 
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
