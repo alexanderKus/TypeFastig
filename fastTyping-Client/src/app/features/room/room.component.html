@@ -9,6 +9,7 @@
         <h2>To join click button 'Join Room'</h2>
       </span>
       <button (click)="joinRoom()">Join Room</button>
+      <dialog #waitingDialog>Waiting for other to join...</dialog>
     </div>
   </ng-container>
   <ng-container *ngIf="isInRoom$ | async">

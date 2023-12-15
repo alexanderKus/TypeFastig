@@ -14,7 +14,7 @@ export class RoomService {
   public stats$ = new BehaviorSubject<PlayerStatus[]>([]);
   public isStarted$ = new BehaviorSubject<boolean>(false);
   public roomLanguage$ = new BehaviorSubject<Language | undefined>(undefined);
-  private roomId: number | undefined = undefined;
+  public roomId: number | undefined = undefined;
   private hubConnection = this.createHubConnection();
 
   constructor(
@@ -32,7 +32,6 @@ export class RoomService {
     hubConnection.start().catch((err) => console.log(err));
 
     hubConnection.on('SetRoomId', (roomId) => {
-      this.isStarted$.next(true);
       this.roomId = roomId;
     });
 
@@ -44,8 +43,8 @@ export class RoomService {
       this.stats$.next(stats);
     });
 
-    hubConnection.on('StartRoom', () => {
-      this.isStarted$.next(true);
+    hubConnection.on('StartRoom', (value) => {
+      this.isStarted$.next(value);
     });
 
     this.spinner.hide();

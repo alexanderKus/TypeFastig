@@ -1,4 +1,4 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component, ElementRef, OnDestroy, ViewChild } from '@angular/core';
 import { Observable } from 'rxjs';
 import { RoomService } from '../services/room.service';
 import { NgxSpinnerService } from 'ngx-spinner';
@@ -14,6 +14,7 @@ import { Language } from '../models/language.enum';
 export class RoomComponent implements OnDestroy {
   isInRoom$: Observable<boolean> = this.roomService.isStarted$;
   stats$: Observable<PlayerStatus[]> = this.roomService.stats$;
+  @ViewChild('waitingDialog') waitingDialog!: ElementRef<HTMLDialogElement>;
 
   constructor(
     private roomService: RoomService,
@@ -26,7 +27,7 @@ export class RoomComponent implements OnDestroy {
   }
 
   async ngOnDestroy(): Promise<void> {
-    if (this.isInRoom$) {
+    if (this.roomService.roomId != undefined) {
       await this.leaveRoom();
     }
   }
@@ -44,6 +45,9 @@ export class RoomComponent implements OnDestroy {
     };
     await this.roomService.sendStats(stats);
     this.spinner.hide();
+    this.waitingDialog.nativeElement.showModal();
+    while (!this.roomService.isStarted$.getValue()) {}
+    this.waitingDialog.nativeElement.close();
   }
 
   async leaveRoom(): Promise<void> {
