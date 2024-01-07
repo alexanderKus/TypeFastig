@@ -1,4 +1,6 @@
-﻿using Application.Auth.Common;
+﻿using System.Security.Cryptography;
+using System.Text;
+using Application.Auth.Common;
 using Application.Interfaces.Auth;
 using Application.Interfaces.Repositories;
 using MediatR;
@@ -23,7 +25,9 @@ public class LoginQueryHandler
         Handle(LoginQuery request, CancellationToken cancellationToken)
     {
         var user = await _unitOfWork.UserRepository.GetUserByUsernameAsync(request.Username);
-        if (user is not null && user.Password == request.Password)
+        using var sha256Hash = SHA256.Create();
+        var passwdHash = sha256Hash.ComputeHash(Encoding.UTF8.GetBytes(request.Password))?.ToString();
+        if (user is not null && user.Password == passwdHash)
         {
             var token = _tokenGenerator.GenerateToken(user.Id, user.Username);
             return new AuthenticationRespone(token);

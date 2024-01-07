@@ -1,4 +1,6 @@
-﻿using Application.Auth.Common;
+﻿using System.Security.Cryptography;
+using System.Text;
+using Application.Auth.Common;
 using Application.Interfaces.Auth;
 using Application.Interfaces.Repositories;
 using Domain.Models.Entities;
@@ -33,11 +35,13 @@ public class RegisterCommandHandler
         {
             return AuthenticationError.NameTaken;
         }
+        using var sha256Hash = SHA256.Create();
         User user = new() {
             Id = 0,
             Username = request.Username,
             Email = request.Email,
-            Password = request.Password
+            Password = sha256Hash.ComputeHash(Encoding.UTF8.GetBytes(request.Password))?.ToString()
+                ?? throw new Exception("Password cannot be null")
         };
         user = await _unitOfWork.UserRepository.AddUserAsync(user);
         var token = _tokenGenerator.GenerateToken(user.Id, user.Username);
